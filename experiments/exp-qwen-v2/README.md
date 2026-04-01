@@ -24,3 +24,16 @@ Branch `exp/qwen-evolution-v1` — see v1 for full analysis of what NOT to do (t
 
 ## Next Step if Successful
 If v2 improves overall quality without regressing anything, merge to main.
+
+## Result: ✅ MERGED TO MAIN
+
+**Merged:** 2026-04-01 via fast-forward merge from exp/qwen-evolution-v2 → main
+
+This branch's key contribution — per-category profile routing — is now in production on `main`.
+
+**What made v2 work when v1 didn't:**
+- v1 failed: global prompt change (temp 0.3 + many additions) hurt writing tasks
+- v2 succeeded: only engineering-specific profile changed, writing tasks kept baseline
+
+The architecture is now extensible: add `modelname_CATEGORY.yaml` for any category where a
+model needs different prompt behavior.
