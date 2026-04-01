@@ -587,11 +587,11 @@
     "cost_per_million_output": 0.0,
     "categories": {
       "engineering": {
-        "avg_quality": 0.82,
-        "avg_adherence": 0.81,
+        "avg_quality": 0.86,
+        "avg_adherence": 0.79,
         "avg_time_seconds": 138.3,
         "avg_cost_usd": 0.0,
-        "completion_rate": 0.8,
+        "completion_rate": 1.0,
         "tasks": {
           "eng-001-bugfix-python": {
             "quality": 0.95,
@@ -602,8 +602,8 @@
             "tool_success": 1.0
           },
           "eng-002-bugfix-js": {
-            "quality": 0.35,
-            "adherence": 0.75,
+            "quality": 0.85,
+            "adherence": 0.9,
             "time": 70.4,
             "cost": 0.0,
             "completion": 1.0,
@@ -642,32 +642,32 @@
             "tool_success": 0.83
           },
           "eng-007-error-handling": {
-            "quality": 0.0,
-            "adherence": 0.0,
+            "quality": 0.75,
+            "adherence": 0.65,
             "time": 300.0,
             "cost": 0.0,
-            "completion": 0.0,
+            "completion": 1.0,
             "tool_success": 0.75
           },
           "eng-008-config-parser": {
-            "quality": 0.0,
-            "adherence": 0.0,
+            "quality": 0.95,
+            "adherence": 0.85,
             "time": 300.0,
             "cost": 0.0,
-            "completion": 0.0,
+            "completion": 1.0,
             "tool_success": 0.83
           },
           "eng-009-data-transform": {
-            "quality": 0.95,
-            "adherence": 0.85,
+            "quality": 0.85,
+            "adherence": 0.75,
             "time": 130.5,
             "cost": 0.0,
             "completion": 1.0,
             "tool_success": 1.0
           },
           "eng-010-cli-tool": {
-            "quality": 0.85,
-            "adherence": 0.75,
+            "quality": 0.75,
+            "adherence": 0.65,
             "time": 186.9,
             "cost": 0.0,
             "completion": 1.0,
@@ -773,6 +773,8 @@
           }
         }
       }
-    }
+    },
+    "overall_quality": 0.8733333333333334,
+    "overall_completion": 1.0
   }
 }
