@@ -41,7 +41,10 @@ def load_all_profiles(directory: str | Path | None = None) -> dict[str, ModelPro
     for yaml_file in sorted(directory.glob("*.yaml")):
         try:
             profile = load_profile(yaml_file)
-            profiles[profile.name] = profile
+            # Key by filename stem (e.g. qwen-local, qwen-local_eng) to avoid
+            # collisions when multiple files share the same `name:` field.
+            stem = yaml_file.stem
+            profiles[stem] = profile
         except Exception as e:
             print(f"Warning: Failed to load profile {yaml_file}: {e}")
 
@@ -52,3 +55,30 @@ def find_profile(name: str, directory: str | Path | None = None) -> ModelProfile
     """Find a profile by name (checks profiles/ directory)."""
     profiles = load_all_profiles(directory)
     return profiles.get(name)
+
+
+def find_profile_for_category(
+    model_name: str,
+    category: str,
+    directory: str | Path | None = None,
+) -> ModelProfile | None:
+    """
+    Find the right profile for a model + category combination.
+
+    Tries modelname_category.yaml first (e.g. qwen-local_eng.yaml),
+    then falls back to modelname.yaml.
+
+    This enables per-category profile variants — e.g. an engineering-tuned
+    profile for coding tasks and a baseline profile for writing tasks.
+    """
+    if directory is None:
+        directory = Path(__file__).parent.parent.parent / "profiles"
+    directory = Path(directory)
+
+    # Try category-specific profile first
+    category_profile_path = directory / f"{model_name}_{category}.yaml"
+    if category_profile_path.exists():
+        return load_profile(category_profile_path)
+
+    # Fall back to generic profile
+    return find_profile(model_name, directory)

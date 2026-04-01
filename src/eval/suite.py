@@ -102,9 +102,26 @@ async def run_suite(
         for i, task in enumerate(suite.tasks, 1):
             print(f"\n  [{i}/{len(suite)}] {task.id}: {task.name}", file=sys.stderr)
 
+            # Per-task profile selection: try category-specific variant first
+            from src.profiles.loader import find_profile_for_category
+            from pathlib import Path
+            task_profile = profile  # default
+            if not custom_profile_path:
+                profiles_dir = Path(__file__).parent.parent.parent / "profiles"
+                cat_profile_path = profiles_dir / f"{model_name}_{task.category}.yaml"
+                if cat_profile_path.exists():
+                    alt = find_profile_for_category(model_name, task.category)
+                    if alt is not None:
+                        # Compare system prompt content to detect a genuinely different profile
+                        if alt.system_prompt != profile.system_prompt:
+                            task_profile = alt
+                            print(f"  📎 {task.category}-specific profile active", file=sys.stderr)
+                        else:
+                            print(f"  📎 {task.category}-specific profile exists (same content)", file=sys.stderr)
+
             # Run the task
             try:
-                result = await run_task(task, profile, registry, stream=stream)
+                result = await run_task(task, task_profile, registry, stream=stream)
             except Exception as e:
                 print(f"  ❌ Task crashed: {e}", file=sys.stderr)
                 result = TaskResult(

@@ -43,6 +43,7 @@ class RoutingDecision:
     expected_cost: float
     reason: str
     fallback: str | None = None
+    profile_name: str | None = None  # None = use default model profile
 
 
 def route_task(
@@ -120,6 +121,15 @@ def route_task(
         fallback_name = fallback.model_name
 
     cat_data = selected.categories.get(category)
+
+    # Determine which profile to use for this model + category
+    from src.profiles.loader import find_profile_for_category
+    from pathlib import Path
+    profile_dir = Path(__file__).parent.parent.parent / "profiles"
+    category_profile_path = profile_dir / f"{selected.model_name}_{category}.yaml"
+    # If a category-specific profile file exists, use it
+    profile_name = f"{selected.model_name}_{category}" if category_profile_path.exists() else None
+
     return RoutingDecision(
         model_name=selected.model_name,
         strategy=strategy,
@@ -129,6 +139,7 @@ def route_task(
         expected_cost=selected.cost_for(category),
         reason=reason,
         fallback=fallback_name,
+        profile_name=profile_name,
     )
 
 
