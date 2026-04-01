@@ -1,0 +1,62 @@
+id: el-001-storyboard-section
+category: elearning
+name: "Generate Rise 360 Storyboard Section"
+description: "Create a storyboard section for a Rise 360 course module on workplace safety, including screen-by-screen specifications with Rise block types, narration, and image briefs."
+max_turns: 10
+timeout_seconds: 240.0
+
+prompt: |
+  You are an instructional designer creating a Rise 360 storyboard. Generate a 5-screen 
+  storyboard section for Module 2: "Identifying Workplace Hazards" of a workplace safety course.
+  
+  Context from the design document (in design-doc.md): The course uses a story-based approach 
+  following "Alex," a new warehouse supervisor. Module 2 covers hazard identification using 
+  the SPOT method (Scan, Prioritize, Organize, Track).
+  
+  For each screen, specify:
+  1. Screen number and title
+  2. Rise 360 block type (text, image+text, labeled graphic, process, accordion, tabs, etc.)
+  3. Narration/body text (conversational, 2nd person)
+  4. Image brief (what to create/source)
+  5. Interaction notes (if applicable)
+  6. Knowledge check (for at least 1 screen)
+  
+  Write the storyboard to storyboard-module2-section.md
+
+seed_files:
+  design-doc.md: |
+    # Workplace Safety Course — Design Document (Excerpt)
+    
+    ## Course Overview
+    - **Audience:** New warehouse supervisors (18-45, mixed experience)
+    - **Tone:** Conversational, encouraging, story-driven
+    - **Character:** Alex, 28, new warehouse supervisor, eager but sometimes overlooks details
+    - **Platform:** Articulate Rise 360
+    
+    ## Module 2: Identifying Workplace Hazards
+    - **Learning Objective:** Apply the SPOT method to identify and categorize workplace hazards
+    - **Duration:** ~15 minutes
+    - **Key Topics:**
+      - What counts as a hazard (physical, chemical, ergonomic, biological)
+      - The SPOT method: Scan, Prioritize, Organize, Track
+      - Common hazards in warehouse environments
+      - Reporting procedures
+    - **Assessment:** Scenario-based — Alex walks through a warehouse, learner identifies hazards
+    
+    ## Narrative Arc
+    Alex arrives for the morning shift and notices some things seem off. The learner guides Alex 
+    through a systematic hazard identification process using SPOT.
+
+expected_outputs: null
+
+scoring_rubric: |
+  Score 0.0-1.0 based on:
+  - **Rise Block Accuracy (0.25):** Are the specified Rise 360 block types real and appropriate? 
+    (labeled graphic, process, accordion, tabs, sorting, matching, etc. are all valid Rise blocks)
+  - **Instructional Quality (0.25):** Does the content teach the SPOT method effectively? 
+    Is it scaffolded properly? Does it use the story/character?
+  - **Narration Quality (0.20):** Is the tone conversational and engaging? 2nd person? 
+    Appropriate reading level?
+  - **Completeness (0.15):** 5 screens, all fields filled, at least 1 knowledge check?
+  - **Image Briefs (0.15):** Are image descriptions specific enough to create/source?
+    Do they support the learning, not just decorate?

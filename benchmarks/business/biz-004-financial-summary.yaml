@@ -1,0 +1,82 @@
+id: biz-004-financial-summary
+category: business
+name: "Create Financial Summary from Data"
+description: "Analyze raw financial data and produce an executive summary with KPIs, trends, and recommendations."
+max_turns: 10
+timeout_seconds: 240.0
+
+prompt: |
+  Analyze the quarterly financial data in financial-data.md and create an executive 
+  financial summary for the leadership team.
+  
+  Write to financial-summary.md with:
+  1. **Quarter at a Glance** — 4-5 headline KPIs with trend arrows (↑↓→)
+  2. **Revenue Analysis** — breakdown by client/project, comparison to previous quarter
+  3. **Expense Analysis** — key categories, any concerns
+  4. **Cash Flow** — current position, runway, any risks
+  5. **Key Ratios** — gross margin, net margin, utilization rate
+  6. **Recommendations** — 3 specific actions based on the data
+
+seed_files:
+  financial-data.md: |
+    # Pathwise Solutions — Q1 2026 Financial Data
+    
+    ## Revenue
+    | Client | Project | Amount | Status |
+    |--------|---------|--------|--------|
+    | BC Nurses Union | Violence Prevention Phase 2 | $45,000 | Complete, invoiced |
+    | Interior Health | Infection Control Update | $22,000 | Complete, invoiced |
+    | WorkSafeBC | Ergonomics Module 5-8 | $38,000 | In progress (60%) |
+    | Northern Health | Cultural Safety (new) | $0 | Contract signed, starts Apr |
+    | Private Corp A | Onboarding Course | $28,000 | Complete, invoiced |
+    | Private Corp B | Sales Training | $15,000 | Invoiced, 45 days overdue |
+    
+    **Q1 Total Revenue: $148,000** (Q4 2025 was $195,000)
+    **Q1 Revenue Target: $200,000**
+    
+    ## Expenses
+    | Category | Amount |
+    |----------|--------|
+    | Salaries & Benefits | $98,000 |
+    | Contractors | $12,000 |
+    | Software & Tools | $4,200 |
+    | AI/LLM API Costs | $2,800 |
+    | Office & Infrastructure | $3,500 |
+    | Marketing | $1,200 |
+    | Professional Development | $800 |
+    | Insurance | $2,400 |
+    | Travel | $1,500 |
+    | Miscellaneous | $900 |
+    
+    **Q1 Total Expenses: $127,300**
+    
+    ## Cash Position
+    - Operating account: $67,000
+    - Savings/reserve: $45,000
+    - Outstanding receivables: $85,000 ($15,000 overdue 45+ days)
+    - Upcoming payables: $42,000 (due within 30 days)
+    
+    ## Team Utilization
+    - John: 40% billable (rest is business dev, admin)
+    - Sarah: 85% billable
+    - Mike: 75% billable
+    - Contract designers: 100% billable (project-based)
+    
+    ## Pipeline
+    - Northern Health ($180K, contract signed, starts April)
+    - Provincial RFP ($120K, submitted, decision May)
+    - Repeat client inquiry ($35K, verbal interest)
+
+expected_outputs: null
+
+scoring_rubric: |
+  Score 0.0-1.0 based on:
+  - **KPI Accuracy (0.25):** Are calculations correct? Gross margin, net margin, 
+    utilization rate, revenue vs. target gap, cash runway?
+  - **Trend Analysis (0.20):** Q1 vs Q4 comparison? Revenue decline identified and contextualized?
+    Pipeline factored into outlook?
+  - **Risk Identification (0.20):** Overdue receivable flagged? Revenue below target noted?
+    Cash runway calculated? Low marketing spend noted?
+  - **Recommendations Quality (0.20):** Specific, actionable, tied to the data?
+    Not generic advice like "increase revenue."
+  - **Clarity & Format (0.15):** Easy to scan? Executive-friendly? Numbers formatted well?

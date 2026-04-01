@@ -1,0 +1,778 @@
+{
+  "mercury-2": {
+    "provider": "openrouter",
+    "cost_per_million_input": 0.25,
+    "cost_per_million_output": 1.0,
+    "categories": {
+      "engineering": {
+        "avg_quality": 0.85,
+        "avg_adherence": 0.765,
+        "avg_time_seconds": 11.112606000900268,
+        "avg_cost_usd": 0.010100925,
+        "completion_rate": 1.0,
+        "tasks": {
+          "eng-001-bugfix-python": {
+            "quality": 0.85,
+            "adherence": 0.75,
+            "time": 22.2789568901062,
+            "cost": 0.00657925,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "eng-002-bugfix-js": {
+            "quality": 0.85,
+            "adherence": 0.9,
+            "time": 7.494740962982178,
+            "cost": 0.0044635000000000005,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "eng-003-add-tests": {
+            "quality": 0.75,
+            "adherence": 0.65,
+            "time": 12.329064130783081,
+            "cost": 0.013755999999999999,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "eng-004-refactor-class": {
+            "quality": 0.75,
+            "adherence": 0.65,
+            "time": 11.250527381896973,
+            "cost": 0.018286,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "eng-005-new-module": {
+            "quality": 0.95,
+            "adherence": 0.85,
+            "time": 6.940207004547119,
+            "cost": 0.0043805,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "eng-006-api-endpoint": {
+            "quality": 0.95,
+            "adherence": 0.85,
+            "time": 6.2115349769592285,
+            "cost": 0.0060062499999999994,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "eng-007-error-handling": {
+            "quality": 0.95,
+            "adherence": 0.85,
+            "time": 13.097352027893066,
+            "cost": 0.011046750000000001,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "eng-008-config-parser": {
+            "quality": 0.85,
+            "adherence": 0.75,
+            "time": 12.114436149597168,
+            "cost": 0.0128425,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "eng-009-data-transform": {
+            "quality": 0.75,
+            "adherence": 0.65,
+            "time": 11.862760782241821,
+            "cost": 0.01432825,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "eng-010-cli-tool": {
+            "quality": 0.85,
+            "adherence": 0.75,
+            "time": 7.54647970199585,
+            "cost": 0.009320249999999999,
+            "completion": 1.0,
+            "tool_success": 1.0
+          }
+        }
+      },
+      "business": {
+        "avg_quality": 0.8640000000000001,
+        "avg_adherence": 0.89,
+        "avg_time_seconds": 6.578100156784058,
+        "avg_cost_usd": 0.0048213,
+        "completion_rate": 1.0,
+        "tasks": {
+          "biz-001-proposal-draft": {
+            "quality": 0.92,
+            "adherence": 0.85,
+            "time": 6.663465976715088,
+            "cost": 0.004702250000000001,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "biz-002-meeting-notes": {
+            "quality": 0.85,
+            "adherence": 0.9,
+            "time": 3.3528497219085693,
+            "cost": 0.003682,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "biz-003-competitor-analysis": {
+            "quality": 0.85,
+            "adherence": 0.9,
+            "time": 4.71425199508667,
+            "cost": 0.0030272499999999996,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "biz-004-financial-summary": {
+            "quality": 0.85,
+            "adherence": 0.9,
+            "time": 7.497143030166626,
+            "cost": 0.006353749999999999,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "biz-005-marketing-copy": {
+            "quality": 0.85,
+            "adherence": 0.9,
+            "time": 10.662790060043335,
+            "cost": 0.00634125,
+            "completion": 1.0,
+            "tool_success": 1.0
+          }
+        }
+      },
+      "elearning": {
+        "avg_quality": 0.764,
+        "avg_adherence": 0.79,
+        "avg_time_seconds": 5.103761816024781,
+        "avg_cost_usd": 0.0037185000000000005,
+        "completion_rate": 1.0,
+        "tasks": {
+          "el-001-storyboard-section": {
+            "quality": 0.72,
+            "adherence": 0.85,
+            "time": 3.217345952987671,
+            "cost": 0.00292325,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "el-002-action-map": {
+            "quality": 0.85,
+            "adherence": 0.95,
+            "time": 4.354501962661743,
+            "cost": 0.00335375,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "el-003-accessibility-review": {
+            "quality": 0.85,
+            "adherence": 0.9,
+            "time": 7.7517640590667725,
+            "cost": 0.0035120000000000004,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "el-004-assessment-items": {
+            "quality": 0.65,
+            "adherence": 0.4,
+            "time": 5.8547141551971436,
+            "cost": 0.00493925,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "el-005-branching-scenario": {
+            "quality": 0.75,
+            "adherence": 0.85,
+            "time": 4.340482950210571,
+            "cost": 0.00386425,
+            "completion": 1.0,
+            "tool_success": 1.0
+          }
+        }
+      }
+    }
+  },
+  "minimax-m2.7": {
+    "provider": "openrouter",
+    "cost_per_million_input": 0.3,
+    "cost_per_million_output": 1.1,
+    "categories": {
+      "engineering": {
+        "avg_quality": 0.8049999999999999,
+        "avg_adherence": 0.735,
+        "avg_time_seconds": 111.397940158844,
+        "avg_cost_usd": 0.0191029,
+        "completion_rate": 0.9,
+        "tasks": {
+          "eng-001-bugfix-python": {
+            "quality": 0.95,
+            "adherence": 0.85,
+            "time": 41.951215744018555,
+            "cost": 0.007645900000000001,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "eng-002-bugfix-js": {
+            "quality": 0.95,
+            "adherence": 0.85,
+            "time": 71.97086310386658,
+            "cost": 0.009227,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "eng-003-add-tests": {
+            "quality": 0.85,
+            "adherence": 0.75,
+            "time": 103.97551679611206,
+            "cost": 0.024810699999999998,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "eng-004-refactor-class": {
+            "quality": 0.95,
+            "adherence": 0.85,
+            "time": 90.09189510345459,
+            "cost": 0.014960999999999999,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "eng-005-new-module": {
+            "quality": 0.95,
+            "adherence": 0.85,
+            "time": 120.75451993942261,
+            "cost": 0.012417,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "eng-006-api-endpoint": {
+            "quality": 0.95,
+            "adherence": 0.85,
+            "time": 84.15378093719482,
+            "cost": 0.013315899999999999,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "eng-007-error-handling": {
+            "quality": 0.75,
+            "adherence": 0.85,
+            "time": 147.11274909973145,
+            "cost": 0.0265108,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "eng-008-config-parser": {
+            "quality": 0.0,
+            "adherence": 0.0,
+            "time": 240.00503492355347,
+            "cost": 0.03573459999999999,
+            "completion": 0.0,
+            "tool_success": 0.0
+          },
+          "eng-009-data-transform": {
+            "quality": 0.85,
+            "adherence": 0.75,
+            "time": 89.45203399658203,
+            "cost": 0.0217537,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "eng-010-cli-tool": {
+            "quality": 0.85,
+            "adherence": 0.75,
+            "time": 124.51179194450378,
+            "cost": 0.0246524,
+            "completion": 1.0,
+            "tool_success": 1.0
+          }
+        }
+      },
+      "business": {
+        "avg_quality": 0.8779999999999999,
+        "avg_adherence": 0.9099999999999999,
+        "avg_time_seconds": 61.21179270744324,
+        "avg_cost_usd": 0.00485182,
+        "completion_rate": 1.0,
+        "tasks": {
+          "biz-001-proposal-draft": {
+            "quality": 0.85,
+            "adherence": 0.95,
+            "time": 71.82754516601562,
+            "cost": 0.0060381,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "biz-002-meeting-notes": {
+            "quality": 0.85,
+            "adherence": 0.9,
+            "time": 33.22340393066406,
+            "cost": 0.0033991,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "biz-003-competitor-analysis": {
+            "quality": 0.85,
+            "adherence": 0.9,
+            "time": 83.17916584014893,
+            "cost": 0.0048816,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "biz-004-financial-summary": {
+            "quality": 0.92,
+            "adherence": 0.95,
+            "time": 72.18951177597046,
+            "cost": 0.0065303,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "biz-005-marketing-copy": {
+            "quality": 0.92,
+            "adherence": 0.85,
+            "time": 45.639336824417114,
+            "cost": 0.00341,
+            "completion": 1.0,
+            "tool_success": 1.0
+          }
+        }
+      },
+      "elearning": {
+        "avg_quality": 0.8779999999999999,
+        "avg_adherence": 0.9,
+        "avg_time_seconds": 112.72487916946412,
+        "avg_cost_usd": 0.009661399999999999,
+        "completion_rate": 1.0,
+        "tasks": {
+          "el-001-storyboard-section": {
+            "quality": 0.85,
+            "adherence": 0.9,
+            "time": 98.76258587837219,
+            "cost": 0.0074756,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "el-002-action-map": {
+            "quality": 0.92,
+            "adherence": 0.85,
+            "time": 78.01417517662048,
+            "cost": 0.0063386,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "el-003-accessibility-review": {
+            "quality": 0.92,
+            "adherence": 0.95,
+            "time": 67.51255774497986,
+            "cost": 0.0065342,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "el-004-assessment-items": {
+            "quality": 0.85,
+            "adherence": 0.9,
+            "time": 111.83952307701111,
+            "cost": 0.011646299999999998,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "el-005-branching-scenario": {
+            "quality": 0.85,
+            "adherence": 0.9,
+            "time": 207.4955539703369,
+            "cost": 0.0163123,
+            "completion": 1.0,
+            "tool_success": 1.0
+          }
+        }
+      }
+    }
+  },
+  "sonnet": {
+    "provider": "openrouter",
+    "cost_per_million_input": 3.0,
+    "cost_per_million_output": 15.0,
+    "categories": {
+      "engineering": {
+        "avg_quality": 0.8400000000000001,
+        "avg_adherence": 0.8400000000000001,
+        "avg_time_seconds": 67.21998989582062,
+        "avg_cost_usd": 0.2617266,
+        "completion_rate": 1.0,
+        "tasks": {
+          "eng-001-bugfix-python": {
+            "quality": 0.95,
+            "adherence": 0.85,
+            "time": 34.60642385482788,
+            "cost": 0.113673,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "eng-002-bugfix-js": {
+            "quality": 0.15,
+            "adherence": 0.85,
+            "time": 35.3488609790802,
+            "cost": 0.10085099999999998,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "eng-003-add-tests": {
+            "quality": 0.75,
+            "adherence": 0.85,
+            "time": 71.88221526145935,
+            "cost": 0.35950199999999993,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "eng-004-refactor-class": {
+            "quality": 0.85,
+            "adherence": 0.75,
+            "time": 67.56441187858582,
+            "cost": 0.30494400000000005,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "eng-005-new-module": {
+            "quality": 0.95,
+            "adherence": 0.85,
+            "time": 64.83280491828918,
+            "cost": 0.20049599999999998,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "eng-006-api-endpoint": {
+            "quality": 0.95,
+            "adherence": 0.85,
+            "time": 63.68641996383667,
+            "cost": 0.294084,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "eng-007-error-handling": {
+            "quality": 0.95,
+            "adherence": 0.85,
+            "time": 105.90879487991333,
+            "cost": 0.3322709999999999,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "eng-008-config-parser": {
+            "quality": 0.95,
+            "adherence": 0.85,
+            "time": 122.98117303848267,
+            "cost": 0.42197700000000005,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "eng-009-data-transform": {
+            "quality": 0.95,
+            "adherence": 0.85,
+            "time": 55.26812505722046,
+            "cost": 0.25344300000000003,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "eng-010-cli-tool": {
+            "quality": 0.95,
+            "adherence": 0.85,
+            "time": 50.12066912651062,
+            "cost": 0.23602499999999996,
+            "completion": 1.0,
+            "tool_success": 1.0
+          }
+        }
+      },
+      "business": {
+        "avg_quality": 0.884,
+        "avg_adherence": 0.8699999999999999,
+        "avg_time_seconds": 41.26901378631592,
+        "avg_cost_usd": 0.06528419999999999,
+        "completion_rate": 1.0,
+        "tasks": {
+          "biz-001-proposal-draft": {
+            "quality": 0.92,
+            "adherence": 0.85,
+            "time": 59.67915320396423,
+            "cost": 0.082692,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "biz-002-meeting-notes": {
+            "quality": 0.85,
+            "adherence": 0.9,
+            "time": 22.1652889251709,
+            "cost": 0.05043899999999999,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "biz-003-competitor-analysis": {
+            "quality": 0.88,
+            "adherence": 0.75,
+            "time": 41.42302393913269,
+            "cost": 0.069684,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "biz-004-financial-summary": {
+            "quality": 0.92,
+            "adherence": 0.95,
+            "time": 40.86181879043579,
+            "cost": 0.065325,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "biz-005-marketing-copy": {
+            "quality": 0.85,
+            "adherence": 0.9,
+            "time": 42.21578407287598,
+            "cost": 0.058281,
+            "completion": 1.0,
+            "tool_success": 1.0
+          }
+        }
+      },
+      "elearning": {
+        "avg_quality": 0.892,
+        "avg_adherence": 0.93,
+        "avg_time_seconds": 52.53389754295349,
+        "avg_cost_usd": 0.0711246,
+        "completion_rate": 1.0,
+        "tasks": {
+          "el-001-storyboard-section": {
+            "quality": 0.92,
+            "adherence": 0.95,
+            "time": 53.36135506629944,
+            "cost": 0.057819,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "el-002-action-map": {
+            "quality": 0.92,
+            "adherence": 0.95,
+            "time": 46.192816972732544,
+            "cost": 0.061584,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "el-003-accessibility-review": {
+            "quality": 0.92,
+            "adherence": 0.95,
+            "time": 40.279459953308105,
+            "cost": 0.066507,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "el-004-assessment-items": {
+            "quality": 0.85,
+            "adherence": 0.9,
+            "time": 56.31206178665161,
+            "cost": 0.07278899999999999,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "el-005-branching-scenario": {
+            "quality": 0.85,
+            "adherence": 0.9,
+            "time": 66.52379393577576,
+            "cost": 0.096924,
+            "completion": 1.0,
+            "tool_success": 1.0
+          }
+        }
+      }
+    }
+  },
+  "qwen-local": {
+    "provider": "lmstudio",
+    "cost_per_million_input": 0.0,
+    "cost_per_million_output": 0.0,
+    "categories": {
+      "engineering": {
+        "avg_quality": 0.82,
+        "avg_adherence": 0.81,
+        "avg_time_seconds": 138.3,
+        "avg_cost_usd": 0.0,
+        "completion_rate": 0.8,
+        "tasks": {
+          "eng-001-bugfix-python": {
+            "quality": 0.95,
+            "adherence": 0.85,
+            "time": 46.8,
+            "cost": 0.0,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "eng-002-bugfix-js": {
+            "quality": 0.35,
+            "adherence": 0.75,
+            "time": 70.4,
+            "cost": 0.0,
+            "completion": 1.0,
+            "tool_success": 0.75
+          },
+          "eng-003-add-tests": {
+            "quality": 0.75,
+            "adherence": 0.65,
+            "time": 180.0,
+            "cost": 0.0,
+            "completion": 1.0,
+            "tool_success": 0.67
+          },
+          "eng-004-refactor-class": {
+            "quality": 0.85,
+            "adherence": 0.9,
+            "time": 139.7,
+            "cost": 0.0,
+            "completion": 1.0,
+            "tool_success": 0.93
+          },
+          "eng-005-new-module": {
+            "quality": 0.95,
+            "adherence": 0.85,
+            "time": 250.2,
+            "cost": 0.0,
+            "completion": 1.0,
+            "tool_success": 0.75
+          },
+          "eng-006-api-endpoint": {
+            "quality": 0.95,
+            "adherence": 0.85,
+            "time": 101.4,
+            "cost": 0.0,
+            "completion": 1.0,
+            "tool_success": 0.83
+          },
+          "eng-007-error-handling": {
+            "quality": 0.0,
+            "adherence": 0.0,
+            "time": 300.0,
+            "cost": 0.0,
+            "completion": 0.0,
+            "tool_success": 0.75
+          },
+          "eng-008-config-parser": {
+            "quality": 0.0,
+            "adherence": 0.0,
+            "time": 300.0,
+            "cost": 0.0,
+            "completion": 0.0,
+            "tool_success": 0.83
+          },
+          "eng-009-data-transform": {
+            "quality": 0.95,
+            "adherence": 0.85,
+            "time": 130.5,
+            "cost": 0.0,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "eng-010-cli-tool": {
+            "quality": 0.85,
+            "adherence": 0.75,
+            "time": 186.9,
+            "cost": 0.0,
+            "completion": 1.0,
+            "tool_success": 0.83
+          }
+        }
+      },
+      "business": {
+        "avg_quality": 0.88,
+        "avg_adherence": 0.89,
+        "avg_time_seconds": 60.8,
+        "avg_cost_usd": 0.0,
+        "completion_rate": 1.0,
+        "tasks": {
+          "biz-001-proposal-draft": {
+            "quality": 0.85,
+            "adherence": 0.95,
+            "time": 69.5,
+            "cost": 0.0,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "biz-002-meeting-notes": {
+            "quality": 0.92,
+            "adherence": 0.95,
+            "time": 28.9,
+            "cost": 0.0,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "biz-003-competitor-analysis": {
+            "quality": 0.85,
+            "adherence": 0.95,
+            "time": 74.1,
+            "cost": 0.0,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "biz-004-financial-summary": {
+            "quality": 0.92,
+            "adherence": 0.85,
+            "time": 85.2,
+            "cost": 0.0,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "biz-005-marketing-copy": {
+            "quality": 0.85,
+            "adherence": 0.75,
+            "time": 46.0,
+            "cost": 0.0,
+            "completion": 1.0,
+            "tool_success": 1.0
+          }
+        }
+      },
+      "elearning": {
+        "avg_quality": 0.88,
+        "avg_adherence": 0.91,
+        "avg_time_seconds": 108.6,
+        "avg_cost_usd": 0.0,
+        "completion_rate": 1.0,
+        "tasks": {
+          "el-001-storyboard-section": {
+            "quality": 0.85,
+            "adherence": 0.9,
+            "time": 73.4,
+            "cost": 0.0,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "el-002-action-map": {
+            "quality": 0.92,
+            "adherence": 0.85,
+            "time": 97.8,
+            "cost": 0.0,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "el-003-accessibility-review": {
+            "quality": 0.92,
+            "adherence": 0.95,
+            "time": 70.0,
+            "cost": 0.0,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "el-004-assessment-items": {
+            "quality": 0.88,
+            "adherence": 0.95,
+            "time": 117.8,
+            "cost": 0.0,
+            "completion": 1.0,
+            "tool_success": 1.0
+          },
+          "el-005-branching-scenario": {
+            "quality": 0.85,
+            "adherence": 0.9,
+            "time": 184.1,
+            "cost": 0.0,
+            "completion": 1.0,
+            "tool_success": 1.0
+          }
+        }
+      }
+    }
+  }
+}

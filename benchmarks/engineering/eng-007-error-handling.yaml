@@ -1,0 +1,92 @@
+id: eng-007-error-handling
+category: engineering
+name: "Add error handling and logging"
+description: "Add proper error handling, logging, and retry logic to a bare data processing function."
+max_turns: 10
+timeout_seconds: 240.0
+
+prompt: |
+  The file `data_fetcher.py` has a `fetch_and_process` function that fetches data from URLs,
+  parses JSON, transforms it, and saves results. It currently has zero error handling — any
+  failure crashes the entire pipeline.
+
+  Add:
+  1. Proper exception handling for each step (network, JSON parsing, file I/O)
+  2. Python logging (not print statements) with appropriate levels
+  3. Retry logic for network requests (3 attempts with exponential backoff)
+  4. A summary of successes/failures returned at the end
+  5. Graceful handling of partial failures (process what you can, skip what you can't)
+
+  Don't change the function signature. Don't add external dependencies beyond stdlib + requests.
+  Write a test in `test_fetcher.py` that mocks the HTTP calls and verifies error handling.
+  Run with `python -m pytest test_fetcher.py -v`.
+
+seed_files:
+  data_fetcher.py: |
+    """Data fetching and processing pipeline."""
+    import json
+    import requests
+
+
+    def fetch_and_process(urls: list[str], output_dir: str) -> dict:
+        """
+        Fetch JSON data from URLs, transform it, and save to output_dir.
+
+        Args:
+            urls: List of URLs to fetch
+            output_dir: Directory to save processed files
+
+        Returns:
+            Summary dict with counts
+        """
+        import os
+        os.makedirs(output_dir, exist_ok=True)
+
+        results = []
+        for i, url in enumerate(urls):
+            response = requests.get(url)
+            data = response.json()
+
+            # Transform: extract specific fields
+            processed = {
+                "source": url,
+                "title": data["title"],
+                "content": data["body"],
+                "word_count": len(data["body"].split()),
+            }
+
+            filename = f"item_{i:04d}.json"
+            filepath = os.path.join(output_dir, filename)
+            with open(filepath, 'w') as f:
+                json.dump(processed, f, indent=2)
+
+            results.append(filepath)
+
+        return {"total": len(urls), "saved": len(results)}
+
+expected_outputs: null
+
+scoring_rubric: |
+  ## Scoring Rubric (0.0-1.0)
+
+  **Error Handling (40%)**
+  - Network errors caught and handled: +0.10
+  - JSON parse errors caught: +0.10
+  - File I/O errors caught: +0.05
+  - Missing keys in data handled: +0.05
+  - Partial failures don't crash pipeline: +0.10
+
+  **Logging & Retry (30%)**
+  - Uses logging module (not print): +0.10
+  - Appropriate log levels (info/warning/error): +0.05
+  - Retry with exponential backoff for network: +0.10
+  - Summary includes failure details: +0.05
+
+  **Testing (20%)**
+  - Mocked HTTP responses: +0.10
+  - Tests for error scenarios: +0.05
+  - Tests pass: +0.05
+
+  **Code Quality (10%)**
+  - Function signature preserved: +0.05
+  - Clean, readable implementation: +0.05

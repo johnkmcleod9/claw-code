@@ -1,0 +1,82 @@
+id: eng-001-bugfix-python
+category: engineering
+name: "Fix off-by-one in pagination"
+description: "Fix an off-by-one error in a Python pagination function that skips the last page and returns wrong slices."
+max_turns: 10
+timeout_seconds: 240.0
+
+prompt: |
+  The file `paginator.py` has a pagination utility used across our app. Users report that:
+  1. The last page of results is never shown
+  2. When requesting page numbers beyond the data, it returns items from the wrong page instead of empty
+
+  Find and fix the bugs. Also add a simple test to `test_paginator.py` that verifies both issues are resolved.
+  Run the tests with `python -m pytest test_paginator.py -v` to confirm they pass.
+
+seed_files:
+  paginator.py: |
+    """Pagination utility."""
+
+    def paginate(items: list, page: int, per_page: int = 10) -> dict:
+        """
+        Return a page of results.
+
+        Args:
+            items: Full list of items
+            page: 1-based page number
+            per_page: Items per page
+
+        Returns:
+            dict with keys: items, page, per_page, total_items, total_pages
+        """
+        total_items = len(items)
+        total_pages = total_items // per_page  # BUG: doesn't ceil
+
+        # Clamp page
+        if page < 1:
+            page = 1
+
+        start = (page - 1) * per_page
+        end = start + per_page
+
+        # BUG: should return empty for out-of-range, but wraps around
+        if start >= total_items:
+            start = start % total_items
+            end = start + per_page
+
+        return {
+            "items": items[start:end],
+            "page": page,
+            "per_page": per_page,
+            "total_items": total_items,
+            "total_pages": total_pages,
+        }
+
+  test_paginator.py: |
+    """Starter test file."""
+    from paginator import paginate
+
+    def test_basic():
+        items = list(range(25))
+        result = paginate(items, page=1, per_page=10)
+        assert len(result["items"]) == 10
+
+expected_outputs: null
+
+scoring_rubric: |
+  ## Scoring Rubric (0.0-1.0)
+
+  **Correctness (50%)**
+  - Fixed total_pages calculation (ceiling division): +0.20
+  - Fixed out-of-range page returning empty list instead of wrapping: +0.20
+  - No regressions in basic pagination: +0.10
+
+  **Testing (30%)**
+  - Test for last page being included: +0.10
+  - Test for out-of-range page returning empty: +0.10
+  - Tests actually pass when run: +0.10
+
+  **Code Quality (20%)**
+  - Clean, readable fix (not a hack): +0.10
+  - Preserved function signature and docstring: +0.05
+  - No unnecessary changes: +0.05

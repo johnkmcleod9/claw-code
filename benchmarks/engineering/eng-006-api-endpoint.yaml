@@ -1,0 +1,65 @@
+id: eng-006-api-endpoint
+category: engineering
+name: "Add REST endpoint to Flask app"
+description: "Add a new /api/tasks endpoint with CRUD operations to an existing Flask application."
+max_turns: 12
+timeout_seconds: 240.0
+
+prompt: |
+  The file `app.py` is a minimal Flask app with a /api/health endpoint.
+
+  Add a /api/tasks resource with:
+  - `GET /api/tasks` — list all tasks (supports ?status=pending filter)
+  - `GET /api/tasks/<id>` — get a single task (404 if not found)
+  - `POST /api/tasks` — create a task (requires JSON body with "title", optional "description")
+  - `PUT /api/tasks/<id>` — update a task (accepts any subset of fields)
+  - `DELETE /api/tasks/<id>` — delete a task (404 if not found)
+
+  Tasks have: id (auto-generated UUID), title, description, status (default: "pending"),
+  created_at (ISO timestamp).
+
+  Store tasks in-memory (dict). Add input validation:
+  - POST requires "title" (400 if missing)
+  - Status must be one of: pending, in_progress, completed
+
+  Write tests in `test_app.py` using Flask's test client.
+  Run with `python -m pytest test_app.py -v`.
+
+seed_files:
+  app.py: |
+    """Simple Flask API."""
+    from flask import Flask, jsonify
+
+    app = Flask(__name__)
+
+    @app.route('/api/health')
+    def health():
+        return jsonify({"status": "ok"})
+
+    if __name__ == '__main__':
+        app.run(debug=True)
+
+  requirements.txt: |
+    flask>=3.0
+
+expected_outputs: null
+
+scoring_rubric: |
+  ## Scoring Rubric (0.0-1.0)
+
+  **Correctness (40%)**
+  - All 5 endpoints work correctly: +0.20
+  - Input validation (missing title, invalid status): +0.10
+  - Proper HTTP status codes (201 for create, 404 for not found, 400 for validation): +0.10
+
+  **Testing (30%)**
+  - Tests for each endpoint: +0.15
+  - Tests for error cases (404, 400): +0.10
+  - Tests pass: +0.05
+
+  **Code Quality (30%)**
+  - Clean route organization: +0.10
+  - UUID generation for IDs: +0.05
+  - Status filtering works: +0.05
+  - Preserved existing /api/health endpoint: +0.05
+  - Proper JSON responses: +0.05

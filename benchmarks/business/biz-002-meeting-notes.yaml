@@ -1,0 +1,103 @@
+id: biz-002-meeting-notes
+category: business
+name: "Extract Meeting Notes & Action Items"
+description: "Process a raw meeting transcript into structured notes with decisions, action items, owners, and deadlines."
+max_turns: 8
+timeout_seconds: 240.0
+
+prompt: |
+  Process the raw meeting transcript in transcript.md into structured meeting notes.
+  Write to meeting-notes.md with:
+  1. Meeting metadata (date, attendees, purpose)
+  2. Key Discussion Points (3-5 bullets, essence not play-by-play)
+  3. Decisions Made (numbered, clear)
+  4. Action Items (table: action, owner, deadline)
+  5. Open Questions / Parking Lot
+  6. Next Meeting (if mentioned)
+
+seed_files:
+  transcript.md: |
+    # Project Kickoff — Northern Health Authority eLearning
+    Date: March 28, 2026 | Duration: 47 minutes
+    
+    Attendees: John (Pathwise, PM), Sarah (Pathwise, ID), Dr. Kim (NHA, Clinical Lead), 
+    Marcus (NHA, LMS Admin), Priya (NHA, HR/Training)
+    
+    John: Thanks everyone for joining. So we're here to kick off the cultural safety 
+    training project. We won the RFP last month and contracts are signed. Sarah, you 
+    want to walk through the proposed timeline?
+    
+    Sarah: Sure. So we're looking at a 6-month timeline. Discovery phase is the first 
+    3 weeks, then design, then development. I think the big question is how we handle 
+    the SME reviews — Dr. Kim, how available is your team?
+    
+    Dr. Kim: That's actually my concern. My clinical team is stretched thin right now. 
+    We have two people who can review content but they're only available Tuesdays and 
+    Thursdays. And I want to be clear — any clinical content needs to go through our 
+    Indigenous health team too. That's non-negotiable.
+    
+    John: Absolutely. We budgeted for that in the proposal. Can you connect us with 
+    the right person on that team?
+    
+    Dr. Kim: Yes, I'll introduce you to Elder Margaret and Dani Crow Feather. They 
+    should be involved from the discovery phase, not just reviewing at the end.
+    
+    John: Totally agree. Sarah, let's adjust our discovery plan to include them from 
+    week 1.
+    
+    Sarah: Done. I'll send a revised discovery plan by Friday. Marcus, quick question — 
+    what version of Moodle are you running?
+    
+    Marcus: We just upgraded to 4.3 last month. SCORM 1.2 and 2004 both work. But 
+    I need to flag something — we have a new accessibility mandate. Everything needs 
+    to meet WCAG 2.1 AA by June. Is that going to be an issue?
+    
+    Sarah: Not at all, we build to AA standard by default. We'll include accessibility 
+    testing in our QA phase and can provide a VPAT if needed.
+    
+    Marcus: A VPAT would be great actually. Can you include that in the deliverables?
+    
+    John: Yes, we'll add it. Priya, you mentioned in our pre-call that there are some 
+    sensitivities around the cultural safety content?
+    
+    Priya: Yes. We had an incident last year where a vendor used stock photos that were 
+    culturally inappropriate. We need to review all imagery. And the scenarios need to 
+    reflect Northern BC communities — not just urban settings.
+    
+    Sarah: That's really helpful context. Would it be possible to do a site visit? 
+    I think seeing the actual work environments would help us create authentic scenarios.
+    
+    Priya: I think that could work. Let me check with facilities. Maybe in April?
+    
+    John: That would be fantastic. Even a virtual tour would help. Okay, let me 
+    summarize where we are. Sarah will send the revised discovery plan by Friday. 
+    Dr. Kim will connect us with Elder Margaret and Dani. Marcus, can you send us 
+    the Moodle specs and any technical requirements doc?
+    
+    Marcus: I'll send that by Wednesday.
+    
+    John: Great. And Priya, you'll check on the site visit possibility. Let's 
+    reconvene in two weeks — how about April 11th, same time?
+    
+    Everyone: Works for us.
+    
+    Dr. Kim: One more thing — can we get NDAs signed before we share any clinical 
+    protocols? Our legal team is asking.
+    
+    John: Of course. I'll send our standard NDA today and we can get that sorted 
+    this week.
+
+expected_outputs: null
+
+scoring_rubric: |
+  Score 0.0-1.0 based on:
+  - **Action Items (0.30):** Are ALL action items captured? Each needs: specific action, 
+    owner, deadline. Must catch: revised discovery plan (Sarah, Friday), intro to Elder Margaret 
+    and Dani (Dr. Kim), Moodle specs (Marcus, Wednesday), site visit check (Priya), 
+    NDA (John, today), VPAT added to deliverables (John/Sarah).
+  - **Decisions (0.20):** Are key decisions captured? Indigenous health team involved from 
+    discovery, VPAT added to deliverables, accessibility to AA standard, site visit to be explored.
+  - **Conciseness (0.20):** Discussion points are essence not transcript? 3-5 key points, 
+    not a play-by-play?
+  - **Accuracy (0.15):** No fabricated details? Names, dates, roles correct?
+  - **Structure (0.15):** Clean formatting? Easy to scan? Next meeting date captured?

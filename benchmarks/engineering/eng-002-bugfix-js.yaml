@@ -1,0 +1,96 @@
+id: eng-002-bugfix-js
+category: engineering
+name: "Fix race condition in async queue"
+description: "Fix a race condition in a JavaScript async task queue where concurrent dequeue calls can process the same task twice."
+max_turns: 10
+timeout_seconds: 240.0
+
+prompt: |
+  The file `task_queue.js` implements an async task queue. Users report that when multiple
+  workers call `dequeue()` simultaneously, the same task sometimes gets processed by two
+  different workers. The `processing` Set is supposed to prevent this but the check-then-act
+  is not atomic.
+
+  Fix the race condition. Write a test in `test_queue.js` that demonstrates the fix works
+  (e.g., dequeue 100 tasks with 5 concurrent workers and verify no duplicates).
+  Run it with `node test_queue.js`.
+
+seed_files:
+  task_queue.js: |
+    /**
+     * Async task queue with worker support.
+     */
+    class TaskQueue {
+      constructor() {
+        this.queue = [];
+        this.processing = new Set();
+        this.completed = [];
+      }
+
+      enqueue(task) {
+        this.queue.push({ id: task.id, data: task.data, status: 'pending' });
+      }
+
+      async dequeue() {
+        // BUG: race condition — two workers can both see the same task as not-processing
+        const task = this.queue.find(t => t.status === 'pending' && !this.processing.has(t.id));
+        if (!task) return null;
+
+        // Another worker could have grabbed it between find() and here
+        this.processing.add(task.id);
+        task.status = 'processing';
+
+        return task;
+      }
+
+      complete(taskId, result) {
+        this.processing.delete(taskId);
+        const task = this.queue.find(t => t.id === taskId);
+        if (task) {
+          task.status = 'completed';
+          task.result = result;
+          this.completed.push(task);
+        }
+      }
+
+      get pending() {
+        return this.queue.filter(t => t.status === 'pending').length;
+      }
+    }
+
+    module.exports = { TaskQueue };
+
+  test_queue.js: |
+    const { TaskQueue } = require('./task_queue');
+
+    async function test() {
+      console.log('Running basic test...');
+      const q = new TaskQueue();
+      q.enqueue({ id: '1', data: 'test' });
+      const task = await q.dequeue();
+      console.log('Got task:', task.id);
+      q.complete(task.id, 'done');
+      console.log('Basic test passed');
+    }
+
+    test().catch(console.error);
+
+expected_outputs: null
+
+scoring_rubric: |
+  ## Scoring Rubric (0.0-1.0)
+
+  **Correctness (50%)**
+  - Eliminated the race condition (atomic check-and-claim): +0.25
+  - Correctly handles concurrent dequeue calls: +0.15
+  - No tasks lost or stuck in processing: +0.10
+
+  **Testing (30%)**
+  - Test with concurrent workers hitting dequeue: +0.15
+  - Verified no duplicate processing: +0.10
+  - Test actually runs and passes: +0.05
+
+  **Code Quality (20%)**
+  - Used appropriate concurrency pattern (mutex/lock or atomic swap): +0.10
+  - Clean, maintainable solution: +0.05
+  - Preserved API compatibility: +0.05

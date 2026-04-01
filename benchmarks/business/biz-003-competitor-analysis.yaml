@@ -1,0 +1,62 @@
+id: biz-003-competitor-analysis
+category: business
+name: "Competitor Research & Analysis"
+description: "Research a competitor and produce a structured competitive analysis with strengths, weaknesses, and strategic implications."
+max_turns: 12
+timeout_seconds: 240.0
+
+prompt: |
+  You are a business analyst for Pathwise Solutions (custom eLearning company, BC, Canada).
+  
+  Using the competitor brief in competitor-brief.md, create a competitive analysis.
+  Write to competitor-analysis.md with:
+  1. **Company Overview** — what they do, size, market position
+  2. **Service Comparison** — table comparing their offerings vs. Pathwise across key dimensions
+  3. **Strengths** — what they do well (be honest, not dismissive)
+  4. **Weaknesses** — gaps or areas where Pathwise has an advantage
+  5. **Win/Loss Implications** — when we'd win against them, when we'd lose
+  6. **Strategic Recommendations** — 3 specific things Pathwise should do to compete better
+
+seed_files:
+  competitor-brief.md: |
+    # Competitor: ELM Learning (elmlearning.com)
+    
+    ## What We Know
+    - US-based, ~100 employees, founded 2002
+    - Focus: custom eLearning, video production, learning strategy
+    - Major clients: Google, Amazon, LinkedIn, Uber (big tech focus)
+    - Known for high-end video production and polished visual design
+    - Won multiple Brandon Hall Awards
+    - Recently added AI-powered content creation tools
+    - Pricing: Premium ($50K-500K+ per project)
+    
+    ## About Pathwise (for comparison)
+    - Canada-based, 5-6 people, 18 years in business
+    - Focus: custom eLearning for healthcare, safety, compliance
+    - Revenue: ~$800K/year
+    - Strengths: deep domain expertise in healthcare/safety, action mapping methodology,
+      WCAG compliance, client relationships, Canadian content
+    - Pricing: Mid-market ($20K-$150K per project)
+    - Using AI tools to extend team capacity
+    
+  additional-context.md: |
+    ## Recent RFP Encounters
+    - Lost to ELM on a tech company's onboarding project (client wanted "wow factor" video)
+    - Won against ELM on a healthcare compliance project (client valued domain expertise over flash)
+    - ELM doesn't seem to bid on Canadian government work (not on standing offers)
+
+expected_outputs: null
+
+scoring_rubric: |
+  Score 0.0-1.0 based on:
+  - **Analytical Depth (0.25):** Goes beyond listing facts? Draws insights about market 
+    positioning, strategic fit, and competitive dynamics?
+  - **Honesty & Balance (0.20):** Acknowledges competitor strengths genuinely? Doesn't 
+    dismiss or inflate? Honest about Pathwise limitations?
+  - **Service Comparison Table (0.15):** Clear, useful comparison across relevant dimensions? 
+    (pricing, team size, specialization, design quality, accessibility, etc.)
+  - **Win/Loss Analysis (0.20):** Realistic about when Pathwise wins vs. loses? 
+    Ties to specific client types and project characteristics?
+  - **Strategic Recommendations (0.15):** Actionable, specific, realistic for a 5-person company? 
+    Not "hire 50 people and build a video studio."
+  - **Research Quality (0.05):** Uses available information well? Doesn't fabricate facts?

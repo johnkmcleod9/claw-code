@@ -1,0 +1,63 @@
+id: el-002-action-map
+category: elearning
+name: "Create Action Map from Business Goal"
+description: "Use Cathy Moore's action mapping methodology to translate a business problem into a structured action map with measurable goal, actions people need to take, practice activities, and minimum information needed."
+max_turns: 10
+timeout_seconds: 240.0
+
+prompt: |
+  Using Cathy Moore's Action Mapping methodology, create an action map for this business problem:
+  
+  Read the brief in project-brief.md, then create a complete action map in action-map.md with:
+  1. **Business Goal** — measurable, with specific metric and target
+  2. **What people need to DO** (not know) — list 8-10 specific observable actions
+  3. **Why they're not doing it** — for each action, identify the likely barrier (motivation, knowledge, environment)
+  4. **Practice activities** — for each action, design a realistic practice activity (scenario-based preferred)
+  5. **Minimum information needed** — ONLY the info required to complete the actions (fight the urge to include everything)
+  
+  Format as structured markdown. Be specific and actionable, not vague.
+
+seed_files:
+  project-brief.md: |
+    # Project Brief: Reducing Customer Escalations
+    
+    ## The Problem
+    Our customer support team (45 agents, mix of 6-month to 5-year tenure) is escalating 
+    38% of calls to supervisors. The target is 15% or less. Each escalation costs ~$47 in 
+    supervisor time and extends resolution by an average of 22 minutes.
+    
+    ## Business Impact
+    - $312K/year in unnecessary supervisor costs
+    - Customer satisfaction scores dropped from 4.2 to 3.6 (out of 5) over 6 months
+    - Agent turnover increased 18% (agents report feeling "unsupported" and "unsure")
+    
+    ## What We Know
+    - Agents say they escalate when they "aren't sure if they have authority" to resolve
+    - Top escalation reasons: refund requests ($50-500), account modifications, technical troubleshooting
+    - Agents have access to a knowledge base but say it's "hard to search" and "outdated"
+    - New agents (< 1 year) escalate at 52% vs. experienced agents at 24%
+    - No formal decision-making framework exists — agents rely on asking supervisors
+    
+    ## Stakeholder Request
+    "We need training on our products and policies so agents know more."
+    
+    ## Constraints
+    - Budget: $35K
+    - Timeline: 8 weeks to deploy
+    - Platform: Rise 360 via existing LMS
+    - Agents can dedicate max 2 hours/week to training
+
+expected_outputs: null
+
+scoring_rubric: |
+  Score 0.0-1.0 based on:
+  - **Business Goal Quality (0.20):** Is the goal measurable with a specific metric? 
+    Does it focus on behavior change, not knowledge? (e.g., "Reduce escalation rate from 38% to 15%" not "Agents will understand policies")
+  - **Actions vs. Knowledge (0.25):** Are the listed items ACTIONS (observable behaviors) not knowledge items?
+    Bad: "Understand refund policies." Good: "Decide whether to approve a refund up to $500 using the decision matrix."
+  - **Barrier Analysis (0.15):** Are barriers realistic and differentiated (motivation vs. knowledge vs. environment)?
+    Does it identify the knowledge base issue as an environmental barrier?
+  - **Practice Activities (0.25):** Are activities scenario-based and realistic? Do they practice the actual decisions agents need to make?
+    Not quizzes about policies — scenarios where they practice deciding.
+  - **Information Discipline (0.15):** Does it resist the urge to teach everything? Is the information list minimal?
+    Does it push back on the stakeholder's "they need more product knowledge" assumption?

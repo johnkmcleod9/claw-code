@@ -2,3 +2,20 @@ __pycache__/
 archive/
 .omx/
 .clawd-agents/
+
+# Benchmark results
+results/
+*.pdf
+
+# Session/eval artifacts
+.port_sessions/
+
+# Evolved profiles (live in experiment branches)
+profiles/*_improved.yaml
+
+# Credentials
+.env
+
+# OS
+.DS_Store
+*.swp

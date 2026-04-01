@@ -1,0 +1,62 @@
+id: eng-008-config-parser
+category: engineering
+name: "Build a multi-format config parser"
+description: "Build a config file parser supporting YAML, JSON, and environment variables with merge precedence."
+max_turns: 12
+timeout_seconds: 240.0
+
+prompt: |
+  Build `config_parser.py` with a `ConfigParser` class that:
+
+  1. Loads config from multiple sources with precedence (highest to lowest):
+     - Environment variables (prefixed, e.g., APP_DATABASE_HOST → database.host)
+     - YAML file
+     - JSON file
+     - Default values
+
+  2. Supports nested keys with dot notation: `config.get("database.host")`
+
+  3. Type coercion for env vars: "true"→True, "123"→123, "1.5"→1.5
+
+  4. Constructor: `ConfigParser(defaults: dict = None, env_prefix: str = "APP")`
+
+  5. Methods:
+     - `load_json(path: str)` — load from JSON file
+     - `load_yaml(path: str)` — load from YAML file
+     - `load_env()` — load from environment variables
+     - `get(key: str, default=None)` — get by dot-notation key
+     - `set(key: str, value)` — set a value
+     - `to_dict() -> dict` — return full merged config
+     - `validate(schema: dict) -> list[str]` — validate required keys, returns list of errors
+
+  Write tests in `test_config.py` covering all methods, merge precedence, type coercion,
+  and dot notation. Run with `python -m pytest test_config.py -v`.
+
+seed_files: {}
+
+expected_outputs: null
+
+scoring_rubric: |
+  ## Scoring Rubric (0.0-1.0)
+
+  **Correctness (40%)**
+  - JSON and YAML loading work: +0.10
+  - Env var loading with prefix stripping: +0.10
+  - Merge precedence correct (env > yaml > json > defaults): +0.10
+  - Dot notation get/set work for nested keys: +0.10
+
+  **Features (25%)**
+  - Type coercion for env vars: +0.10
+  - Validation with schema: +0.10
+  - to_dict returns properly merged result: +0.05
+
+  **Testing (20%)**
+  - Tests for each load method: +0.05
+  - Tests for merge precedence: +0.05
+  - Tests for type coercion: +0.05
+  - All tests pass: +0.05
+
+  **Code Quality (15%)**
+  - Type hints: +0.05
+  - Docstrings: +0.05
+  - No unnecessary dependencies: +0.05

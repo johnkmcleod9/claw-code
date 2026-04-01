@@ -1,0 +1,61 @@
+id: eng-005-new-module
+category: engineering
+name: "Build a sliding window rate limiter"
+description: "Create a rate limiter module with sliding window algorithm from a specification."
+max_turns: 12
+timeout_seconds: 240.0
+
+prompt: |
+  Build a rate limiter module in `rate_limiter.py` with the following spec:
+
+  ## Requirements
+  - Class `RateLimiter` with sliding window algorithm
+  - Constructor takes `max_requests: int` and `window_seconds: float`
+  - Method `allow(key: str) -> bool` — returns True if the request is allowed, False if rate limited
+  - Method `remaining(key: str) -> int` — returns remaining requests in current window
+  - Method `reset(key: str)` — clears rate limit for a key
+  - Thread-safe (use threading.Lock)
+  - Automatically cleans up expired entries (don't leak memory)
+
+  ## Example usage:
+  ```python
+  limiter = RateLimiter(max_requests=5, window_seconds=60.0)
+  limiter.allow("user-123")  # True (1/5 used)
+  limiter.remaining("user-123")  # 4
+  ```
+
+  Write tests in `test_rate_limiter.py` covering:
+  - Basic allow/deny flow
+  - Window expiration (use time mocking)
+  - Multiple keys are independent
+  - Thread safety
+  - The remaining() method
+  - The reset() method
+
+  Run tests with `python -m pytest test_rate_limiter.py -v`.
+
+seed_files: {}
+
+expected_outputs: null
+
+scoring_rubric: |
+  ## Scoring Rubric (0.0-1.0)
+
+  **Correctness (40%)**
+  - Sliding window correctly tracks requests: +0.15
+  - Expired entries are cleaned up: +0.10
+  - Thread-safe implementation: +0.10
+  - Multiple keys work independently: +0.05
+
+  **Testing (30%)**
+  - Basic allow/deny tests: +0.10
+  - Window expiration tested (with time mock): +0.10
+  - Thread safety tested: +0.05
+  - All tests pass: +0.05
+
+  **Code Quality (30%)**
+  - Clean API matching the spec: +0.10
+  - Type hints throughout: +0.05
+  - Docstrings: +0.05
+  - No external dependencies: +0.05
+  - Memory cleanup implemented: +0.05

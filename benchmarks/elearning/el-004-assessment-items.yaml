@@ -1,0 +1,79 @@
+id: el-004-assessment-items
+category: elearning
+name: "Generate Assessment Items from Content"
+description: "Create a variety of assessment items (multiple choice, scenario-based, matching, ordering) from source content, mapped to learning objectives using Bloom's taxonomy."
+max_turns: 10
+timeout_seconds: 240.0
+
+prompt: |
+  Create 8 assessment items for a course module on "Incident Response Procedures" based on 
+  the content in source-content.md and the learning objectives in objectives.md.
+  
+  Write to assessments.md with:
+  - Mix of question types: 2 multiple choice, 2 scenario-based, 2 matching/ordering, 2 true/false with justification
+  - Each item must reference the specific learning objective it assesses
+  - Include Bloom's taxonomy level for each item
+  - Provide answer key with explanations
+  - Include at least 2 items at "Apply" level or higher (not just recall)
+  - Write plausible distractors for MC items (common misconceptions, not obviously wrong)
+
+seed_files:
+  source-content.md: |
+    # Incident Response Procedures
+    
+    ## The 4-Phase Response Model
+    
+    ### Phase 1: Detection & Reporting
+    When an incident occurs, the first responder must:
+    - Assess the situation for immediate danger
+    - Call 911 if life-threatening
+    - Secure the area (do NOT clean up)
+    - Report to supervisor within 15 minutes
+    - Complete an Initial Incident Report (IIR) within 1 hour
+    
+    ### Phase 2: Investigation
+    The investigation team (supervisor + safety officer) must:
+    - Interview witnesses within 24 hours (separately, not as a group)
+    - Photograph the scene before any changes
+    - Review equipment maintenance logs
+    - Identify root cause using the "5 Whys" method
+    - Complete investigation within 5 business days
+    
+    ### Phase 3: Corrective Action
+    Based on investigation findings:
+    - Implement immediate temporary controls (within 24 hours)
+    - Develop permanent corrective actions (within 30 days)
+    - Use the hierarchy of controls: Elimination > Substitution > Engineering > Administrative > PPE
+    - Assign responsible parties and deadlines
+    
+    ### Phase 4: Follow-Up
+    - Verify corrective actions are implemented (30-day check)
+    - Monitor for recurrence (90-day tracking period)
+    - Update training materials if procedures changed
+    - Share lessons learned (anonymized) at monthly safety meetings
+    
+  objectives.md: |
+    ## Learning Objectives — Incident Response Module
+    
+    By the end of this module, learners will be able to:
+    1. Execute the correct sequence of first-responder actions when discovering a workplace incident
+    2. Distinguish between situations requiring immediate 911 contact vs. supervisor-only reporting
+    3. Apply the "5 Whys" root cause analysis method to a workplace incident scenario
+    4. Prioritize corrective actions using the hierarchy of controls
+    5. Identify the required documentation and timelines for each phase of incident response
+
+expected_outputs: null
+
+scoring_rubric: |
+  Score 0.0-1.0 based on:
+  - **Objective Alignment (0.20):** Is each item clearly mapped to a specific learning objective? 
+    Are all 5 objectives covered?
+  - **Bloom's Taxonomy (0.15):** Are levels correctly identified? Are at least 2 items at 
+    Apply/Analyze/Evaluate (not all Remember/Understand)?
+  - **Question Quality (0.25):** MC distractors plausible? Scenarios realistic? 
+    Items test understanding not just recall? No "all of the above" or trick questions?
+  - **Question Variety (0.15):** Good mix of types as requested? Not all MC?
+  - **Answer Key Quality (0.15):** Explanations teach, not just state the answer? 
+    Explain why distractors are wrong?
+  - **Content Accuracy (0.10):** Do items accurately reflect the source content? 
+    Timelines, sequences, and procedures correct?

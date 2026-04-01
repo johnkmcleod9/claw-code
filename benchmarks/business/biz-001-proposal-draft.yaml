@@ -1,0 +1,86 @@
+id: biz-001-proposal-draft
+category: business
+name: "Draft Proposal from RFP"
+description: "Create a proposal response section from an RFP excerpt, following company templates and tone."
+max_turns: 10
+timeout_seconds: 240.0
+
+prompt: |
+  You are a proposal writer for Pathwise Solutions, a custom eLearning company. 
+  
+  Read the RFP excerpt in rfp.md and the company info in company-info.md.
+  Write a proposal response for the "Approach & Methodology" section to proposal-approach.md.
+  
+  Requirements:
+  - 800-1200 words
+  - Address each requirement from the RFP
+  - Reference relevant past work (use the case studies provided)
+  - Professional but warm tone (not corporate jargon)
+  - Include a brief project timeline
+  - Emphasize what makes Pathwise different
+
+seed_files:
+  rfp.md: |
+    # RFP Excerpt: Provincial Health Authority — Healthcare Worker Safety Training
+    
+    ## Section 3: Approach & Methodology
+    The proponent must describe:
+    
+    3.1 Their approach to developing custom eLearning for a healthcare audience
+    3.2 How they will ensure clinical accuracy of content (SME collaboration process)
+    3.3 Their instructional design methodology and how it drives measurable behavior change
+    3.4 Quality assurance and review process
+    3.5 Approach to accessibility (WCAG 2.1 AA compliance)
+    3.6 Project management methodology and communication plan
+    3.7 How they will handle revisions and change requests
+    
+    ## Context
+    - 12 modules covering workplace violence prevention, chemical safety, ergonomics, infection control
+    - Audience: 15,000+ healthcare workers (nurses, techs, support staff, physicians)
+    - Platform: Must be SCORM 2004 compatible with their Moodle LMS
+    - Timeline: 9 months from contract to full deployment
+    - Budget: $180K-$240K range
+    
+  company-info.md: |
+    # Pathwise Solutions — Company Overview
+    
+    ## Who We Are
+    Custom eLearning design and development firm based in British Columbia, Canada.
+    18 years in business. Specialize in healthcare, workplace safety, and compliance training.
+    
+    ## Methodology
+    - Action Mapping (Cathy Moore) — focus on what people need to DO, not just know
+    - Story-based learning with realistic scenarios
+    - Iterative development with client review at every milestone
+    - WCAG 2.1 AA compliance built into every project
+    
+    ## Relevant Case Studies
+    1. **BC Nurses Union — Violence Prevention** (2024): 8-module Rise 360 course, 
+       scenario-based, 12,000 learners. Resulted in 34% increase in incident reporting.
+    2. **Interior Health — Infection Control** (2023): 6-module program with branching 
+       scenarios. 95% completion rate, 28% improvement in hand hygiene audit scores.
+    3. **WorkSafeBC — Ergonomics** (2024): Interactive assessment tool + 4 modules. 
+       Won "Excellence in eLearning" award from Canadian Society for Training & Development.
+    
+    ## Team
+    - 2 senior instructional designers (10+ years healthcare)
+    - 3 multimedia developers
+    - 1 QA/accessibility specialist
+    - SME coordination managed by lead ID
+
+expected_outputs: null
+
+scoring_rubric: |
+  Score 0.0-1.0 based on:
+  - **RFP Coverage (0.25):** Does it address all 7 RFP requirements (3.1-3.7)?
+    Each should get meaningful treatment, not just a sentence.
+  - **Case Study Integration (0.15):** Are the 3 case studies referenced naturally 
+    (not just listed)? Do they demonstrate relevant capability?
+  - **Methodology Depth (0.20):** Does it explain action mapping and scenario-based 
+    learning in a way the client can understand? Not just buzzwords?
+  - **Tone & Voice (0.15):** Professional but warm? Confident without arrogance? 
+    Client-focused (talking about their needs, not just our capabilities)?
+  - **Timeline (0.10):** Is a realistic 9-month timeline sketched? Major milestones?
+  - **Differentiation (0.10):** Does it articulate what makes Pathwise different? 
+    Not generic claims any company could make?
+  - **Length (0.05):** Within 800-1200 word range?

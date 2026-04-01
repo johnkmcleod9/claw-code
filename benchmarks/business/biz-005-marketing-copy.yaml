@@ -1,0 +1,67 @@
+id: biz-005-marketing-copy
+category: business
+name: "Write Marketing Copy from Brief"
+description: "Create marketing content (LinkedIn post, email, and landing page section) from a campaign brief."
+max_turns: 10
+timeout_seconds: 240.0
+
+prompt: |
+  Read the marketing brief in brief.md and create three pieces of marketing content.
+  Write all three to marketing-content.md:
+  
+  1. **LinkedIn Post** (150-250 words) — thought leadership, not salesy
+  2. **Email to Past Clients** (200-300 words) — warm, personal, with clear CTA
+  3. **Website Landing Page Section** (300-400 words) — for a new "AI-Enhanced eLearning" service page
+  
+  All content should reflect Pathwise's voice: expert but approachable, focused on 
+  client outcomes not features, Canadian market awareness.
+
+seed_files:
+  brief.md: |
+    # Marketing Brief: AI-Enhanced eLearning Services
+    
+    ## What We're Announcing
+    Pathwise is now using AI tools throughout our development process — not replacing 
+    our team, but amplifying their capabilities. This lets us:
+    - Deliver projects 30-40% faster
+    - Offer competitive pricing for mid-size organizations
+    - Create more personalized learning paths
+    - Generate draft content faster, leaving more time for quality and client collaboration
+    
+    ## Target Audience
+    - L&D managers at mid-size Canadian organizations (200-5000 employees)
+    - Healthcare and public sector training directors
+    - HR leaders responsible for compliance training
+    
+    ## Key Messages
+    1. AI makes custom eLearning accessible to organizations that previously couldn't afford it
+    2. We use AI to enhance human expertise, not replace it
+    3. Every project still has experienced IDs and quality review
+    4. Faster turnaround means less time waiting, more time training
+    
+    ## Tone
+    - Confident but not hype-y (avoid "revolutionary," "game-changing")
+    - Practical and outcome-focused
+    - Acknowledge the AI skepticism in L&D community honestly
+    
+    ## CTA
+    - LinkedIn: Engage in comments, drive to website
+    - Email: Book a 20-minute consultation
+    - Landing page: "Tell us about your project" form
+
+expected_outputs: null
+
+scoring_rubric: |
+  Score 0.0-1.0 based on:
+  - **Tone Consistency (0.20):** Matches the brief? Expert but approachable? Not hype-y?
+    Avoids "revolutionary" and "game-changing"? Acknowledges AI skepticism?
+  - **Message Delivery (0.20):** All 4 key messages woven in naturally across the 3 pieces?
+    Not just listed but integrated into the narrative?
+  - **Format Compliance (0.15):** Word counts met? Each piece has appropriate structure 
+    for its medium (LinkedIn vs. email vs. landing page)?
+  - **CTAs (0.15):** Clear, appropriate calls to action for each medium? 
+    LinkedIn → engagement, Email → consultation, Landing page → form?
+  - **Audience Awareness (0.15):** Speaks to Canadian L&D/HR professionals? 
+    Addresses their concerns? Uses appropriate language level?
+  - **Originality (0.15):** Not generic AI marketing copy? Specific to Pathwise's 
+    positioning and services? Would stand out in a feed?

@@ -1,0 +1,80 @@
+id: eng-003-add-tests
+category: engineering
+name: "Write pytest tests for string utilities"
+description: "Write comprehensive pytest tests for an existing string utility module with 5 functions."
+max_turns: 12
+timeout_seconds: 240.0
+
+prompt: |
+  The file `strutils.py` contains 5 string utility functions used across our codebase.
+  They currently have zero test coverage.
+
+  Write comprehensive pytest tests in `test_strutils.py` covering:
+  - Normal cases for each function
+  - Edge cases (empty strings, None where applicable, unicode, very long strings)
+  - Error cases (bad input types)
+
+  Aim for at least 3 tests per function. Run them with `python -m pytest test_strutils.py -v`
+  to make sure they all pass.
+
+seed_files:
+  strutils.py: |
+    """String utility functions."""
+    import re
+    from typing import Optional
+
+
+    def slugify(text: str, separator: str = "-") -> str:
+        """Convert text to URL-friendly slug."""
+        text = text.lower().strip()
+        text = re.sub(r'[^\w\s-]', '', text)
+        text = re.sub(r'[\s_]+', separator, text)
+        text = text.strip(separator)
+        return text
+
+
+    def truncate(text: str, max_length: int, suffix: str = "...") -> str:
+        """Truncate text to max_length, adding suffix if truncated."""
+        if len(text) <= max_length:
+            return text
+        return text[:max_length - len(suffix)] + suffix
+
+
+    def extract_emails(text: str) -> list[str]:
+        """Extract all email addresses from text."""
+        pattern = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
+        return re.findall(pattern, text)
+
+
+    def camel_to_snake(name: str) -> str:
+        """Convert camelCase or PascalCase to snake_case."""
+        s = re.sub(r'([A-Z]+)([A-Z][a-z])', r'\1_\2', name)
+        s = re.sub(r'([a-z\d])([A-Z])', r'\1_\2', s)
+        return s.lower()
+
+
+    def mask_sensitive(text: str, visible_chars: int = 4) -> str:
+        """Mask text, showing only last N characters."""
+        if len(text) <= visible_chars:
+            return text
+        return "*" * (len(text) - visible_chars) + text[-visible_chars:]
+
+expected_outputs: null
+
+scoring_rubric: |
+  ## Scoring Rubric (0.0-1.0)
+
+  **Coverage (40%)**
+  - Tests for all 5 functions: +0.15
+  - At least 3 tests per function: +0.15
+  - Edge cases covered (empty, unicode, boundary): +0.10
+
+  **Quality (30%)**
+  - Tests are well-named and descriptive: +0.10
+  - Used pytest features appropriately (parametrize, fixtures): +0.10
+  - Tests are independent and don't share mutable state: +0.10
+
+  **Correctness (30%)**
+  - All tests pass when run: +0.15
+  - Tests actually validate behavior (not trivial asserts): +0.10
+  - No false positives (tests that pass but don't test what they claim): +0.05

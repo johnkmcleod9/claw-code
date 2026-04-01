@@ -1,0 +1,84 @@
+id: el-003-accessibility-review
+category: elearning
+name: "WCAG Accessibility Review"
+description: "Review course content and interaction descriptions against WCAG 2.1 AA standards, identifying violations and providing specific remediation steps."
+max_turns: 10
+timeout_seconds: 240.0
+
+prompt: |
+  You are an accessibility specialist. Review the course storyboard excerpt in storyboard.md 
+  against WCAG 2.1 AA standards for eLearning.
+  
+  Write your review to accessibility-review.md with:
+  1. **Summary** — overall accessibility posture (pass/conditional pass/fail)
+  2. **Issues Found** — each issue with:
+     - WCAG criterion number and name
+     - Level (A or AA)
+     - Severity (critical/major/minor)
+     - The specific content that violates
+     - Remediation recommendation
+  3. **Positive Findings** — what's already done well
+  4. **Recommendations** — general improvements for the full course
+
+seed_files:
+  storyboard.md: |
+    # Module 3: Data Privacy Basics — Storyboard Excerpt
+    
+    ## Screen 1: Introduction
+    - **Block:** Full-width image with overlay text
+    - **Image:** Abstract blue and green swirling data visualization
+    - **Text overlay (white on image):** "Your data. Your responsibility."
+    - **No alt text specified**
+    
+    ## Screen 2: What is PII?
+    - **Block:** Labeled graphic (interactive)
+    - **Image:** Office scene with 6 clickable hotspots
+    - **Hotspots:** Each reveals a type of PII (name, SSN, email, phone, DOB, address)
+    - **Instructions:** "Click each icon to learn about types of Personally Identifiable Information"
+    - **Color coding:** Red = high sensitivity, Yellow = medium, Green = low
+    - **No keyboard navigation mentioned**
+    
+    ## Screen 3: The Cost of a Breach
+    - **Block:** Infographic
+    - **Content:** Statistics displayed as large numbers with icons
+      - "$4.45M average cost of data breach" (in red)
+      - "277 days average time to identify" (in orange) 
+      - "83% of orgs had more than one breach" (in yellow)
+    - **All information conveyed through color-coded numbers and icons only**
+    - **Decorative background animation of floating data particles**
+    
+    ## Screen 4: Knowledge Check
+    - **Block:** Multiple choice
+    - **Question:** "Which of the following is NOT considered PII?"
+    - **Options:**
+      - A) Company stock price (correct)
+      - B) Employee ID number
+      - C) Home address
+      - D) Date of birth
+    - **Feedback:** "That's right! 🎉" / "Not quite. Try again! 😕"
+    - **Timer:** 30 seconds per question
+    
+    ## Screen 5: Scenario — The Shared Spreadsheet
+    - **Block:** Scenario with branching
+    - **Audio narration only (no text transcript)**
+    - **Scenario:** "You discover a colleague has shared a spreadsheet containing customer 
+      names and social security numbers via a public link..."
+    - **Options presented as colored buttons (no text labels, icon-only):**
+      - 🔴 Report immediately
+      - 🟡 Ask colleague to remove
+      - 🟢 Ignore, not your problem
+
+expected_outputs: null
+
+scoring_rubric: |
+  Score 0.0-1.0 based on:
+  - **Issue Identification (0.35):** Did it catch the major violations?
+    Must-catch: missing alt text (1.1.1), color-only info (1.4.1), no keyboard nav (2.1.1), 
+    timed assessment (2.2.1), audio without transcript (1.2.1), icon-only buttons (1.1.1/1.3.1)
+  - **WCAG Criterion Accuracy (0.20):** Are the correct WCAG criteria cited? Right numbers and names?
+  - **Remediation Quality (0.25):** Are fixes specific and actionable? Not just "add alt text" but 
+    "Add descriptive alt text to the data visualization: 'Abstract visualization of data flow 
+    representing digital information exchange'"
+  - **Severity Assessment (0.10):** Are critical issues (keyboard nav, no transcript) rated higher 
+    than minor ones?
+  - **Completeness (0.10):** Positive findings noted? General recommendations included?

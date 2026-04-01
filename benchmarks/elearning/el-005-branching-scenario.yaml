@@ -1,0 +1,67 @@
+id: el-005-branching-scenario
+category: elearning
+name: "Design Branching Scenario"
+description: "Create a branching scenario with decision points, consequences, and feedback for scenario-based learning."
+max_turns: 10
+timeout_seconds: 240.0
+
+prompt: |
+  Design a branching scenario for practicing difficult workplace conversations, based on the 
+  brief in scenario-brief.md.
+  
+  Write to branching-scenario.md with:
+  1. **Scenario overview** — situation, character, learning goal
+  2. **Decision tree** — at least 3 decision points with 3 choices each
+  3. **Consequences** — each choice leads to a realistic consequence (not just "wrong, try again")
+  4. **Endings** — at least 2 good endings, 1 mediocre, 1 poor (not binary pass/fail)
+  5. **Feedback** — at each decision point, explain WHY the outcome occurred
+  6. **Flowchart notation** — use a clear text-based flowchart (e.g., indented tree or labeled nodes)
+  
+  Ensure choices are genuinely ambiguous — no obviously "right" answer at each point. 
+  Real conversations have tradeoffs.
+
+seed_files:
+  scenario-brief.md: |
+    # Branching Scenario Brief
+    
+    ## Topic: Addressing Performance Issues with a Team Member
+    
+    ## Context
+    You are a team lead. Jordan, a normally high-performing team member, has missed 
+    3 deadlines in the past month and submitted work with unusual errors. Other team 
+    members are starting to pick up the slack and show frustration.
+    
+    ## Learning Objective
+    Practice having a supportive but direct conversation about performance issues, 
+    balancing empathy with accountability.
+    
+    ## Key Skills to Practice
+    - Opening the conversation without putting the person on the defensive
+    - Active listening and asking open-ended questions
+    - Responding to emotional reactions (anger, tears, defensiveness)
+    - Setting clear expectations while showing support
+    - Following up appropriately
+    
+    ## Important Notes
+    - Jordan is dealing with a family health crisis (learner doesn't know this initially)
+    - The "right" approach involves discovering the root cause through questioning
+    - Being too harsh leads to Jordan shutting down or quitting
+    - Being too soft leads to continued performance issues and team resentment
+    - The best outcome involves co-creating a temporary support plan
+
+expected_outputs: null
+
+scoring_rubric: |
+  Score 0.0-1.0 based on:
+  - **Scenario Realism (0.20):** Do the situations and responses feel authentic? 
+    Would a real person respond this way? Does Jordan's behavior make sense?
+  - **Choice Ambiguity (0.20):** Are choices genuinely difficult? No obvious right answer?
+    Each option should have realistic pros and cons.
+  - **Consequence Logic (0.20):** Do consequences flow naturally from choices? 
+    Does being too harsh lead to shutdown? Too soft to continued issues?
+    Is the family crisis discoverable through good questioning?
+  - **Learning Value (0.20):** Does the scenario teach the intended skills?
+    Does feedback explain communication principles, not just outcomes?
+  - **Structure (0.10):** Is the flowchart clear and navigable? 3+ decision points? Multiple endings?
+  - **Emotional Intelligence (0.10):** Does the scenario handle the emotional dimension well?
+    Tears, defensiveness, anger — are responses realistic and not stereotyped?

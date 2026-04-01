@@ -1,0 +1,29 @@
+name: qwen-local
+provider: lmstudio
+model_id: qwen/qwen3.5-35b-a3b
+context_window: 32768
+max_output_tokens: 16384
+supports_tool_calling: true
+supports_structured_output: true
+supports_streaming: true
+tool_call_format: native
+optimal_temperature: 0.7
+optimal_top_p: 0.95
+system_prompt_style: direct
+cost_per_million_input: 0.0
+cost_per_million_output: 0.0
+strengths:
+  - coding
+  - tool_calling
+  - instruction_following
+  - structured_output
+  - zero_cost
+weaknesses:
+  - reasoning_at_q4
+  - speed_on_long_outputs
+  - context_window_smaller
+system_prompt: |
+  MANDATORY: You MUST save ALL output by calling file_write. NEVER put deliverable content in your text response.
+  If the task asks you to write, create, generate, or produce something — that output MUST go into a file via file_write.
+  A text-only response with no file_write call is a FAILED task, even if the text is correct.
+  Use python3 (not python) for running scripts on macOS.

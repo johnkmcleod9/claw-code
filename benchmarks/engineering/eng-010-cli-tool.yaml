@@ -1,0 +1,72 @@
+id: eng-010-cli-tool
+category: engineering
+name: "Build a file organizer CLI"
+description: "Build a CLI tool with argparse that organizes files in a directory by type, date, or size."
+max_turns: 12
+timeout_seconds: 240.0
+
+prompt: |
+  Build `organize.py` — a CLI tool that organizes files in a directory.
+
+  ## Commands
+
+  `python organize.py by-type <directory>` — moves files into subdirectories by extension:
+  - images/ (.jpg, .png, .gif, .svg, .webp)
+  - documents/ (.pdf, .doc, .docx, .txt, .md)
+  - code/ (.py, .js, .ts, .java, .go, .rs)
+  - data/ (.csv, .json, .yaml, .yml, .xml)
+  - other/ (everything else)
+
+  `python organize.py by-date <directory>` — moves files into YYYY/MM/ subdirectories based
+  on file modification date.
+
+  `python organize.py summary <directory>` — prints a summary table:
+  ```
+  Extension  Count  Total Size
+  .py        12     45.2 KB
+  .json      5      12.8 KB
+  ...
+  ```
+
+  ## Options
+  - `--dry-run` — show what would happen without moving files
+  - `--verbose` — print each file operation
+  - `--exclude <pattern>` — glob pattern to exclude (e.g., "*.log")
+
+  ## Requirements
+  - Use argparse with subcommands
+  - Handle conflicts (if destination file exists, add _1, _2 suffix)
+  - Never modify files starting with . (hidden files)
+  - Stdlib only
+
+  Create a few test files in a `test_dir/` to verify it works.
+  Run `python organize.py summary test_dir/` to show it works.
+
+seed_files: {}
+
+expected_outputs: null
+
+scoring_rubric: |
+  ## Scoring Rubric (0.0-1.0)
+
+  **Correctness (40%)**
+  - by-type command works: +0.15
+  - by-date command works: +0.10
+  - summary command works: +0.10
+  - Conflict handling (suffix): +0.05
+
+  **CLI Design (25%)**
+  - Proper argparse with subcommands: +0.10
+  - --dry-run works: +0.05
+  - --verbose works: +0.05
+  - --exclude works: +0.05
+
+  **Edge Cases (15%)**
+  - Hidden files skipped: +0.05
+  - Empty directories handled: +0.05
+  - Non-existent directory error: +0.05
+
+  **Code Quality (20%)**
+  - Clean function organization: +0.10
+  - Stdlib only: +0.05
+  - Helpful help text: +0.05
