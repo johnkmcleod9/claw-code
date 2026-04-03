@@ -71,6 +71,8 @@ def print_help():
   {C.CYAN}/clear{C.RESET}           Clear conversation history
   {C.CYAN}/compact{C.RESET}         Compact conversation (keep summary)
   {C.CYAN}/approval{C.RESET}        Toggle tool approval mode (on/off)
+  {C.CYAN}/plan{C.RESET}            Toggle plan mode (read-only exploration)
+  {C.CYAN}/tools{C.RESET}           List all available tools
   {C.CYAN}/workdir <path>{C.RESET}  Change working directory
   {C.CYAN}/help{C.RESET}            Show this help
   {C.CYAN}/quit{C.RESET}            Exit
@@ -79,6 +81,7 @@ def print_help():
   • Multi-line input: end a line with \\ to continue
   • Press Ctrl+C to cancel current generation
   • Press Ctrl+D or type /quit to exit
+  • The agent can use plan mode, worktrees, sub-agents, MCP, and skills
 """)
 
 
@@ -553,6 +556,18 @@ async def async_main():
                     session.change_workdir(arg)
                 else:
                     print(f"{C.DIM}Current: {session.workdir}. Usage: /workdir <path>{C.RESET}")
+            elif cmd == "/plan":
+                from src.tools_impl.plan_tool import _plan_mode, is_plan_mode
+                import src.tools_impl.plan_tool as pm
+                pm._plan_mode = not pm._plan_mode
+                state = "ON (read-only)" if pm._plan_mode else "OFF (full access)"
+                print(f"{C.GREEN}✓ Plan mode: {state}{C.RESET}")
+            elif cmd == "/tools":
+                tools = session.registry.list_tools()
+                print(f"\n{C.BOLD}Available tools ({len(tools)}):{C.RESET}")
+                for t in tools:
+                    print(f"  {C.CYAN}{t.name:<20}{C.RESET} {t.description[:60]}")
+                print()
             else:
                 print(f"{C.RED}Unknown command: {cmd}. Type /help{C.RESET}")
             continue

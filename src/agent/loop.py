@@ -152,6 +152,24 @@ class AgentLoop:
             # Execute tool calls
             for tc in result.tool_calls:
                 self.stats.tool_calls_made += 1
+
+                # Plan mode: block write tools
+                try:
+                    from src.tools_impl.plan_tool import is_plan_mode, WRITE_TOOLS
+                    if is_plan_mode() and tc.name in WRITE_TOOLS:
+                        self.messages.append(
+                            Message(
+                                role="tool",
+                                content=f"⚠️ Blocked in plan mode: {tc.name}. Use exit_plan_mode first.",
+                                tool_call_id=tc.id,
+                                name=tc.name,
+                            )
+                        )
+                        print(f"\n⚠️ {tc.name} blocked (plan mode)", file=sys.stderr)
+                        continue
+                except ImportError:
+                    pass
+
                 print(f"\n⚡ {tc.name}({_summarize_args(tc.arguments)})", file=sys.stderr)
 
                 tool_result = await self.registry.execute(

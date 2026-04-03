@@ -91,6 +91,11 @@ def create_default_registry() -> ToolRegistry:
     from .agent_tool import AgentTool, TaskListTool, TaskGetTool
     from .notebook_edit import NotebookEditTool
     from .misc_tools import SleepTool, AskUserTool, ToolSearchTool
+    from .mcp_tool import MCPTool, ListMcpResourcesTool
+    from .repl_tool import REPLTool
+    from .config_tool import ConfigTool
+    from .plan_tool import EnterPlanModeTool, ExitPlanModeTool
+    from .worktree_tool import EnterWorktreeTool, ExitWorktreeTool
 
     registry = ToolRegistry()
 
@@ -99,8 +104,9 @@ def create_default_registry() -> ToolRegistry:
     registry.register(FileWriteTool())
     registry.register(FileEditTool())
 
-    # Shell
+    # Shell & REPL
     registry.register(BashTool())
+    registry.register(REPLTool())
 
     # Search tools
     registry.register(GrepTool())
@@ -122,8 +128,23 @@ def create_default_registry() -> ToolRegistry:
     registry.register(TaskListTool())
     registry.register(TaskGetTool())
 
+    # MCP integration
+    registry.register(MCPTool())
+    registry.register(ListMcpResourcesTool())
+
     # Notebook
     registry.register(NotebookEditTool())
+
+    # Plan mode
+    registry.register(EnterPlanModeTool())
+    registry.register(ExitPlanModeTool())
+
+    # Git worktree
+    registry.register(EnterWorktreeTool())
+    registry.register(ExitWorktreeTool())
+
+    # Config
+    registry.register(ConfigTool())
 
     # Utility tools
     registry.register(SleepTool())
