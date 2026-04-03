@@ -28,6 +28,23 @@ from src.profiles.model_profile import ModelProfile
 from src.tools_impl.registry import create_default_registry, ToolRegistry
 from src.agent.loop import AgentLoop, AgentStats
 from src.agent.context import build_system_prompt
+from src.agent.context_pipeline import (
+    PipelineConfig,
+    run_pipeline,
+    build_pipeline_config,
+)
+from src.session_store import (
+    StoredSession,
+    SessionIndexEntry,
+    make_session_id,
+    save_session,
+    load_session,
+    list_sessions,
+    delete_session,
+    session_from_repl,
+    restore_messages_to_provider,
+    format_session_list,
+)
 from config import load_config, get_model_config, CONFIG_PATH
 
 # ANSI colors
@@ -77,6 +94,11 @@ def print_help():
   {C.CYAN}/buddy{C.RESET}           Meet your terminal companion 🐾
   {C.CYAN}/tools{C.RESET}           List all available tools
   {C.CYAN}/workdir <path>{C.RESET}  Change working directory
+  {C.CYAN}/save [title]{C.RESET}    Save conversation to disk
+  {C.CYAN}/sessions{C.RESET}        List saved sessions
+  {C.CYAN}/resume <id>{C.RESET}     Resume a saved session
+  {C.CYAN}/delete <id>{C.RESET}     Delete a saved session
+  {C.CYAN}/pipeline{C.RESET}        Show context pipeline status
   {C.CYAN}/help{C.RESET}            Show this help
   {C.CYAN}/quit{C.RESET}            Exit
 
@@ -99,6 +121,7 @@ class InteractiveSession:
         approval_mode: bool = True,
         no_color: bool = False,
         max_turns: int = 25,
+        session_id: str | None = None,
     ):
         self.config = config
         self.workdir = workdir
@@ -110,6 +133,10 @@ class InteractiveSession:
 
         if no_color:
             C.disable()
+
+        # Session tracking (WP 8615)
+        self.session_id = session_id or make_session_id(str(workdir))
+        self._session_title = ""
 
         # Load model
         self._load_model(model_name)
@@ -220,7 +247,127 @@ class InteractiveSession:
         """Clear conversation history."""
         self.messages = []
         self.turn_count = 0
+        # New session ID after clear
+        self.session_id = make_session_id(str(self.workdir))
+        self._session_title = ""
         print(f"{C.GREEN}✓ Conversation cleared{C.RESET}")
+
+    # ── Session persistence (WP 8615) ─────────────────────────────────────
+
+    def save_conversation(self, title: str = "") -> bool:
+        """Save the current conversation to disk."""
+        if not self.messages:
+            print(f"{C.DIM}Nothing to save (no messages){C.RESET}")
+            return False
+        if title:
+            self._session_title = title
+        try:
+            stored = session_from_repl(
+                session_id=self.session_id,
+                messages=self.messages,
+                model=self.model_name,
+                workdir=self.workdir,
+                input_tokens=self.total_stats.total_input_tokens,
+                output_tokens=self.total_stats.total_output_tokens,
+                total_cost_usd=self.total_stats.total_cost_usd,
+                title=self._session_title,
+            )
+            path = save_session(stored)
+            print(f"{C.GREEN}✓ Saved session {self.session_id[:8]}… → {path}{C.RESET}")
+            return True
+        except Exception as e:
+            print(f"{C.RED}✗ Failed to save session: {e}{C.RESET}")
+            return False
+
+    def list_conversations(self):
+        """List saved sessions."""
+        entries = list_sessions(workdir=str(self.workdir), limit=20)
+        if not entries:
+            # Also list all sessions, not just from this workdir
+            entries = list_sessions(limit=20)
+        print(f"\n{C.BOLD}Saved sessions:{C.RESET}")
+        print(format_session_list(entries, color=True))
+        print()
+
+    def resume_conversation(self, session_id: str) -> bool:
+        """Resume a previously saved session."""
+        try:
+            stored = load_session(session_id)
+        except FileNotFoundError:
+            # Try prefix match
+            entries = list_sessions(limit=100)
+            matches = [e for e in entries if e.session_id.startswith(session_id)]
+            if len(matches) == 1:
+                try:
+                    stored = load_session(matches[0].session_id)
+                except Exception as e:
+                    print(f"{C.RED}✗ Could not load session: {e}{C.RESET}")
+                    return False
+            elif len(matches) > 1:
+                print(f"{C.RED}✗ Ambiguous prefix — {len(matches)} sessions match{C.RESET}")
+                return False
+            else:
+                print(f"{C.RED}✗ Session not found: {session_id!r}{C.RESET}")
+                return False
+        except ValueError as e:
+            print(f"{C.RED}✗ Corrupt session: {e}{C.RESET}")
+            return False
+
+        # Restore messages
+        self.messages = restore_messages_to_provider(stored, Message)
+        self.session_id = stored.session_id
+        self._session_title = stored.title
+        self.turn_count = stored.message_count
+
+        # Restore model if different
+        if stored.model and stored.model != self.model_name:
+            try:
+                self._load_model(stored.model)
+                print(f"{C.DIM}[Switched to {stored.model} to match saved session]{C.RESET}")
+            except Exception:
+                pass  # Keep current model if saved model isn't available
+
+        print(
+            f"{C.GREEN}✓ Resumed session {stored.session_id[:8]}… "
+            f"({stored.message_count} messages, {stored.age_label()}){C.RESET}"
+        )
+        if stored.display_title:
+            print(f"{C.DIM}  {stored.display_title}{C.RESET}")
+        return True
+
+    def delete_conversation(self, session_id: str) -> bool:
+        """Delete a saved session."""
+        # Support prefix
+        if len(session_id) < 16:
+            entries = list_sessions(limit=100)
+            matches = [e for e in entries if e.session_id.startswith(session_id)]
+            if len(matches) == 1:
+                session_id = matches[0].session_id
+            elif len(matches) > 1:
+                print(f"{C.RED}✗ Ambiguous prefix — {len(matches)} sessions match{C.RESET}")
+                return False
+        ok = delete_session(session_id)
+        if ok:
+            print(f"{C.GREEN}✓ Deleted session {session_id[:8]}…{C.RESET}")
+        else:
+            print(f"{C.RED}✗ Session not found: {session_id!r}{C.RESET}")
+        return ok
+
+    def show_pipeline_status(self):
+        """Show context pipeline status."""
+        from src.agent.compaction import estimate_tokens
+        tokens = estimate_tokens(self.messages)
+        ctx = getattr(self, '_pipeline_config', None)
+        ctx_size = self.profile.context_window if hasattr(self.profile, 'context_window') else 128_000
+        pct = tokens / ctx_size * 100 if ctx_size else 0
+        print(f"""
+{C.BOLD}Context Pipeline Status:{C.RESET}
+  {C.DIM}Messages:{C.RESET}     {len(self.messages)}
+  {C.DIM}Est. tokens:{C.RESET}  {tokens:,} / {ctx_size:,} ({pct:.1f}%)
+  {C.DIM}Session ID:{C.RESET}   {self.session_id}
+  {C.DIM}Model:{C.RESET}        {self.model_name} ({self.model_id})
+  {C.DIM}Pipeline:{C.RESET}     compact at 60% | overflow guard at 90% | memory inject
+""")
 
     def change_workdir(self, path_str: str):
         """Change working directory."""
@@ -268,15 +415,18 @@ class InteractiveSession:
         tool_defs = self.registry.to_tool_defs()
         final_response = ""
 
+        # Build pipeline config using model context window (WP 8616)
+        ctx_tokens = getattr(self.profile, 'context_window', 128_000)
+        pipeline_cfg = build_pipeline_config(
+            model_context_tokens=ctx_tokens,
+            compact_at=0.60,
+        )
+
         for turn in range(self.max_turns):
             loop.stats.turns = turn + 1
 
-            # Compact if needed
-            from src.agent.compaction import compact_messages
-            loop.messages = compact_messages(
-                loop.messages,
-                max_tokens=loop.compaction_threshold,
-            )
+            # Multi-stage context pipeline (compact + memory inject + overflow guard)
+            loop.messages, _pipeline_report = await run_pipeline(loop.messages, pipeline_cfg)
 
             # Get completion (streaming)
             print(f"\n{C.MAGENTA}─── {self.model_name} ───{C.RESET}")
@@ -469,8 +619,24 @@ async def async_main():
         type=int, default=25,
         help="Maximum agent turns per interaction. Default: 25",
     )
+    parser.add_argument(
+        "--resume", "-r",
+        metavar="SESSION_ID",
+        help="Resume a previously saved session by ID or prefix",
+    )
+    parser.add_argument(
+        "--sessions",
+        action="store_true",
+        help="List saved sessions and exit",
+    )
 
     args = parser.parse_args()
+
+    # List sessions and exit
+    if args.sessions:
+        entries = list_sessions(limit=30)
+        print(format_session_list(entries, color=True))
+        return
 
     # Load config
     config = load_config()
@@ -496,6 +662,10 @@ async def async_main():
         print(f"\nRun with --model <name> or set up ~/.claw-code/config.json", file=sys.stderr)
         sys.exit(1)
 
+    # Resume saved session if requested
+    if args.resume:
+        session.resume_conversation(args.resume)
+
     # One-shot mode
     if args.task:
         await session.run_turn(args.task)
@@ -512,6 +682,9 @@ async def async_main():
             # EOF (Ctrl+D)
             print(f"\n{C.DIM}Goodbye!{C.RESET}")
             session.show_cost()
+            # Auto-save on exit if there are messages
+            if len(session.messages) > 2:
+                session.save_conversation()
             break
 
         if not user_input.strip():
@@ -528,6 +701,8 @@ async def async_main():
             if cmd in ("/quit", "/exit", "/q"):
                 print(f"\n{C.DIM}Goodbye!{C.RESET}")
                 session.show_cost()
+                if len(session.messages) > 2:
+                    session.save_conversation()
                 break
             elif cmd == "/help":
                 print_help()
@@ -592,6 +767,25 @@ async def async_main():
                 for t in tools:
                     print(f"  {C.CYAN}{t.name:<20}{C.RESET} {t.description[:60]}")
                 print()
+            # ── Session persistence commands (WP 8615) ────────────────────
+            elif cmd == "/save":
+                session.save_conversation(title=arg)
+            elif cmd == "/sessions":
+                session.list_conversations()
+            elif cmd == "/resume":
+                if arg:
+                    session.resume_conversation(arg)
+                else:
+                    print(f"{C.DIM}Usage: /resume <session-id-or-prefix>{C.RESET}")
+                    session.list_conversations()
+            elif cmd == "/delete":
+                if arg:
+                    session.delete_conversation(arg)
+                else:
+                    print(f"{C.DIM}Usage: /delete <session-id-or-prefix>{C.RESET}")
+            # ── Context pipeline status (WP 8616) ─────────────────────────
+            elif cmd == "/pipeline":
+                session.show_pipeline_status()
             else:
                 print(f"{C.RED}Unknown command: {cmd}. Type /help{C.RESET}")
             continue
