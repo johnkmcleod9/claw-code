@@ -16,7 +16,7 @@ Built in one evening from a structural Python port to a fully working multi-mode
 | **Bridge** | 5 | ~800 | ✅ config, messaging, session, jwt_utils, debug_utils |
 | **Components** | 9 | ~1,800 | ✅ formatter, diff_display, tool_result, conversation, status, input, markdown, progress, cost |
 | **Hooks** | 6 | ~900 | ✅ state, suggestion, lifecycle, tool_permission, event, notification |
-| **Skills** | enhanced | ~500 | ✅ Full skill discovery, matching, execution pipeline |
+| **Skills** | 20 | ~4,400 | ✅ discovery, matching, execution pipeline, cache, registry, validator, renderer, watcher, installer, context injection, events, permissions, telemetry, remote, composer, template, CLI commands, error handling |
 | **Buddy** | 5 | ~1,500 | ✅ species, generator, commands, companion, prompt |
 | **Voice** | 1 | ~200 | ✅ Speech input/output |
 | **Keybindings** | ported | ~200 | ✅ Keyboard shortcuts |
