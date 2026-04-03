@@ -1,9 +1,17 @@
 """
-Python keybindings subsystem — ported from 14 archived TypeScript modules.
+Python keybindings subsystem — 14 modules for keyboard shortcut handling.
 
-Provides keybinding parsing, resolution, and matching:
+Provides keybinding parsing, resolution, matching, and display formatting
+for the Claw Code CLI REPL.
 
-- ``parser``  ParsedKeybinding, Modifier, Key enums, parse_keybinding(), resolver
+Modules:
+- ``parser``          ParsedKeybinding, Modifier, Key enums, parse_keybinding(), resolver
+- ``shortcut_format`` Formatted display strings (symbols, platform labels, tables)
+- ``load_user``       Load and merge user keybinding overrides from JSON config
+- ``match``           Terminal escape sequence parsing and key event matching
+- ``template``        Starter keybindings.json template generator
+
+Ports: 14 archived TypeScript modules → 5 Python modules.
 """
 from __future__ import annotations
 
@@ -20,22 +28,31 @@ from .parser import (
     is_reserved,
     parse_keybinding,
 )
-
-import json as _json
-from pathlib import Path as _Path
-
-_SNAPSHOT_PATH = _Path(__file__).resolve().parent.parent / "reference_data" / "subsystems" / "keybindings.json"
-_SNAPSHOT = _json.loads(_SNAPSHOT_PATH.read_text())
-
-ARCHIVE_NAME = _SNAPSHOT["archive_name"]
-MODULE_COUNT = _SNAPSHOT["module_count"]
-SAMPLE_FILES = tuple(_SNAPSHOT["sample_files"])
-PORTING_NOTE = (
-    f"Ported Python package for '{ARCHIVE_NAME}' — "
-    f"{MODULE_COUNT} archived TypeScript modules → 1 Python module (core logic)."
+from .shortcut_format import (
+    format_shortcut,
+    format_shortcut_row,
+    format_binding_table,
+    parse_display_sequence,
+)
+from .load_user import (
+    load_user_bindings,
+    merge_bindings,
+    ensure_keybindings_dir,
+)
+from .match import (
+    KeyEvent,
+    match_binding,
+    parse_terminal_sequence,
+    key_event_matches_binding,
+)
+from .template import (
+    generate_user_bindings_template,
+    get_default_bindings_list,
+    generate_full_bindings_file,
 )
 
 __all__ = [
+    # parser
     "DEFAULT_BINDINGS",
     "Key",
     "KeybindingResolver",
@@ -47,8 +64,22 @@ __all__ = [
     "format_keybinding",
     "is_reserved",
     "parse_keybinding",
-    "ARCHIVE_NAME",
-    "MODULE_COUNT",
-    "PORTING_NOTE",
-    "SAMPLE_FILES",
+    # shortcut_format
+    "format_shortcut",
+    "format_shortcut_row",
+    "format_binding_table",
+    "parse_display_sequence",
+    # load_user
+    "load_user_bindings",
+    "merge_bindings",
+    "ensure_keybindings_dir",
+    # match
+    "KeyEvent",
+    "match_binding",
+    "parse_terminal_sequence",
+    "key_event_matches_binding",
+    # template
+    "generate_user_bindings_template",
+    "get_default_bindings_list",
+    "generate_full_bindings_file",
 ]
