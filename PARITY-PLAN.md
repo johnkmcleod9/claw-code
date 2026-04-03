@@ -1,82 +1,52 @@
-# Claw Code → Claude Code Parity Plan
+# Claw Code — Claude Code Parity Tracker
 
-## Goal
-Port all Claude Code CLI tools and capabilities from the Rust reference implementation
-to working Python, making Claw Code a fully functional multi-model alternative.
+## Current: 26 tools (vs Claude Code's ~25 active tools)
 
-## Source of Truth
-- Tool specs & implementations: `rust/crates/tools/src/lib.rs` (3,500 lines)
-- Tool manifest: `src/reference_data/tools_snapshot.json` (184 modules, 43 tools)
-- Skill system: `src/reference_data/subsystems/skills.json`
+### ✅ Complete — All Core Capabilities
 
-## Status Key
-- ✅ Done (working Python)
-- 🔨 In progress
-- ⬜ Not started
+| Capability | Claude Code | Claw Code | Notes |
+|-----------|------------|-----------|-------|
+| File read/write/edit | ✅ | ✅ | Full parity |
+| Bash/shell execution | ✅ | ✅ | With approval gates |
+| Grep + glob search | ✅ | ✅ | Full parity |
+| Web search | ✅ | ✅ | DuckDuckGo + Google fallback |
+| Web fetch (URL → text) | ✅ | ✅ | HTML-to-markdown extraction |
+| Todo/task tracking | ✅ | ✅ | Session + file persistence |
+| Skills (.md loading) | ✅ | ✅ | Project + global dirs |
+| CLAUDE.md / AGENTS.md | ✅ | ✅ | Auto-loads from project root |
+| Sub-agent spawning | ✅ | ✅ | Background process + task get |
+| Task management | ✅ | ✅ | list/get/monitor |
+| MCP integration | ✅ | ✅ | stdio + HTTP transports |
+| MCP resource listing | ✅ | ✅ | Full parity |
+| REPL (Python/JS/shell) | �� | ✅ | + Ruby |
+| Notebook editing | ✅ | ✅ | Jupyter .ipynb |
+| Plan mode (read-only) | ✅ | ✅ | Blocks write tools |
+| Git worktree isolation | ✅ | ✅ | Create/merge/discard |
+| Config read/write | ✅ | ✅ | From within agent |
+| Ask user questions | ✅ | ✅ | Interactive prompt |
+| Tool search | ✅ | ✅ | Search by keyword |
+| Sleep/pause | ✅ | ✅ | Async sleep |
+| Streaming output | ✅ | ✅ | Full parity |
+| Context compaction | ✅ | ✅ | Token-based |
+| Cost tracking | ❌ | ✅ | **We're ahead** |
+| Multi-model support | ❌ | ✅ | **9 models, hot-swap** |
+| Approval gates (Y/n/a) | ✅ | ✅ | Full parity |
 
----
+### ⬜ Not Ported (low priority / platform-specific)
 
-## Phase 1: Core Tool Parity (Today)
-Tools that make the agent immediately more capable.
+| Feature | Reason |
+|---------|--------|
+| LSP (Language Server) | Complex; bash + grep covers most use cases |
+| PowerShell | macOS/Linux focused |
+| Structured Output | Niche use case |
+| Remote Trigger | Server-specific |
+| Cron Scheduling | OS-level, not agent concern |
+| SendMessage (Slack etc.) | Platform-specific integration |
 
-| Tool | Status | Notes |
-|------|--------|-------|
-| bash | ✅ | Working |
-| file_read | ✅ | Working |
-| file_write | ✅ | Working |
-| file_edit | ✅ | Working |
-| glob | ✅ | Working |
-| grep | ✅ | Working |
-| **web_search** | ⬜ | Port from Rust — scrapes Google, extracts hits |
-| **web_fetch** | ⬜ | Port from Rust — fetches URL, extracts readable text |
-| **todo_write** | ⬜ | Session task list (pending/in_progress/completed) |
-| **notebook_edit** | ⬜ | Jupyter notebook cell editing |
+### 🚀 Where We're Ahead of Claude Code
 
-## Phase 2: Skills & Context System
-What makes Claude Code *smart* about projects.
-
-| Feature | Status | Notes |
-|---------|--------|-------|
-| **Skill loader** | ⬜ | Load .md skills from skills/ dir, inject into system prompt |
-| **CLAUDE.md support** | ⬜ | Auto-load project context files (CLAUDE.md, AGENTS.md) |
-| **Memory/remember** | ⬜ | Persistent memory across sessions |
-| **Config tool** | ⬜ | Read/write config from within agent |
-
-## Phase 3: Agent Teams (Multi-Agent)
-The killer feature — spawn sub-agents for parallel work.
-
-| Tool | Status | Notes |
-|------|--------|-------|
-| **Agent (spawn)** | ⬜ | Launch sub-agent with own model/prompt/tools |
-| **Task create/get/list/update/stop/output** | ⬜ | Task management for sub-agents |
-| **Team create/delete** | ⬜ | Named agent teams |
-| **SendMessage** | ⬜ | Inter-agent messaging |
-
-## Phase 4: Developer Experience
-| Feature | Status | Notes |
-|---------|--------|-------|
-| **ToolSearch** | ⬜ | Search available tools by keyword |
-| **Plan mode** | ⬜ | Think before acting (no tool execution) |
-| **Worktree mode** | ⬜ | Git worktree isolation |
-| **Brief tool** | ⬜ | Summarize long outputs |
-| **REPL tool** | ⬜ | In-process Python/Node REPL |
-| **LSP tool** | ⬜ | Language server protocol integration |
-| **Sleep tool** | ⬜ | Pause execution |
-
-## Phase 5: MCP Integration
-| Feature | Status | Notes |
-|---------|--------|-------|
-| **MCP client** | ⬜ | Connect to MCP servers (stdio + HTTP) |
-| **ListMcpResources** | ⬜ | Discover MCP server capabilities |
-| **ReadMcpResource** | ⬜ | Read from MCP resources |
-| **McpAuth** | ⬜ | OAuth for MCP servers |
-
----
-
-## Implementation Order (optimized for impact)
-1. web_search + web_fetch (immediate capability boost)
-2. todo_write (session task tracking)
-3. Skill loader + CLAUDE.md (project awareness)
-4. Agent spawn + task tools (multi-agent)
-5. MCP client (ecosystem integration)
-6. Everything else (plan mode, LSP, worktree, etc.)
+1. **Multi-model**: 9 models via OpenRouter + local LM Studio (Claude Code: Claude only)
+2. **Cost tracking**: Per-turn and per-session cost reporting
+3. **Model hot-swap**: `/model deepseek` mid-conversation
+4. **Price optimization**: Use cheap models ($0.14/M) for iteration, quality models for final pass
+5. **MCP config compatibility**: Reads Claude's .claude/mcp.json format
