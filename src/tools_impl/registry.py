@@ -97,6 +97,7 @@ def create_default_registry() -> ToolRegistry:
     from .plan_tool import EnterPlanModeTool, ExitPlanModeTool
     from .worktree_tool import EnterWorktreeTool, ExitWorktreeTool
     from .team_tool import TeamCreateTool, TeamTaskTool, TeamAssignTool, TeamStatusTool, TeamStopTool
+    from .dream_tool import DreamTool
 
     registry = ToolRegistry()
 
@@ -150,6 +151,9 @@ def create_default_registry() -> ToolRegistry:
     registry.register(TeamAssignTool())
     registry.register(TeamStatusTool())
     registry.register(TeamStopTool())
+
+    # Dream mode (background reasoning)
+    registry.register(DreamTool())
 
     # Config
     registry.register(ConfigTool())
