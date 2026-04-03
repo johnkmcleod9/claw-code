@@ -1,249 +1,153 @@
 """
-Skill matcher — intelligent skill selection for a given context.
+Skill matcher — find skills relevant to a given query or context.
 
-Ports: skills/matchSkill.ts, skills/skillMatcher.ts
-Provides relevance scoring and automatic skill triggering.
+Ports: skills/matchSkill.ts, skills/skillScorer.ts, skills/intentResolver.ts
+
+Scores skills using:
+1. Exact name match (highest priority)
+2. Token overlap between query and skill name/description
+3. Tag matching
+4. Fuzzy prefix matching
 """
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass
 from pathlib import Path
-from typing import Sequence
 
-from .loader import Skill, list_skills, resolve_skill
-
-
-# ---------------------------------------------------------------------------
-# Match scoring
-# ---------------------------------------------------------------------------
-
-@dataclass
-class ScoredSkillMatch:
-    """A skill matched against a query with relevance scoring."""
-    skill: Skill
-    score: float           # 0.0 – 1.0
-    matched_on: list[str]   # which fields matched
-    reason: str = ""
+from .loader import Skill, list_skills
+from .types import SkillMatch
 
 
 # ---------------------------------------------------------------------------
-# Keyword signal banks
+# Tokenisation
 # ---------------------------------------------------------------------------
 
-_KEYWORD_SIGNALS: dict[str, dict[str, float]] = {
-    "code": {
-        "write": 0.8, "function": 0.7, "class": 0.7, "import": 0.6,
-        "refactor": 0.9, "bug": 0.8, "fix": 0.8, "error": 0.6,
-        "test": 0.7, "debug": 0.8, "lint": 0.6, "type": 0.5,
-        "api": 0.6, "endpoint": 0.6, "database": 0.7, "sql": 0.6,
-    },
-    "security": {
-        "security": 1.0, "vulnerability": 1.0, "auth": 0.8,
-        "password": 0.7, "token": 0.6, "secret": 0.8,
-        "injection": 1.0, "xss": 0.9, "csrf": 0.9,
-        "encrypt": 0.8, "tls": 0.7, "https": 0.6,
-        "permission": 0.6, "access": 0.5,
-    },
-    "docs": {
-        "document": 0.9, "readme": 0.9, "comment": 0.7,
-        "spec": 0.8, "specification": 0.8, "api": 0.6,
-        "changelog": 0.7, "guide": 0.7, "tutorial": 0.7,
-    },
-    "test": {
-        "test": 1.0, "coverage": 0.8, "pytest": 0.8,
-        "unittest": 0.7, "integration": 0.7, "mock": 0.6,
-        "assert": 0.5, "fail": 0.5,
-    },
-    "refactor": {
-        "refactor": 1.0, "improve": 0.8, "clean": 0.7,
-        "simplify": 0.8, "extract": 0.6, "rename": 0.5,
-    },
-    "deploy": {
-        "deploy": 1.0, "release": 0.8, "build": 0.7,
-        "docker": 0.7, "ci": 0.6, "cd": 0.6, "pipeline": 0.6,
-    },
-    "review": {
-        "review": 1.0, "pr": 0.8, "pull": 0.8, "merge": 0.7,
-        "approve": 0.6, "comment": 0.5,
-    },
-    "architecture": {
-        "architecture": 1.0, "design": 0.8, "pattern": 0.7,
-        "microservice": 0.8, "monolith": 0.6, "api": 0.5,
-        "schema": 0.6, "model": 0.5,
-    },
-    "data": {
-        "data": 0.8, "csv": 0.7, "json": 0.6, "parse": 0.6,
-        "transform": 0.7, "pipeline": 0.6, "etl": 0.8,
-    },
-    "learning": {
-        "learn": 0.9, "teach": 0.9, "explain": 0.8,
-        "understand": 0.7, "course": 0.8, "training": 0.8,
-        "instructional": 0.9, "elearning": 0.9,
-    },
-}
+_STOP_WORDS = frozenset({
+    "a", "an", "the", "and", "or", "is", "in", "on", "at", "to", "of",
+    "for", "with", "that", "this", "do", "can", "how", "what", "use",
+    "i", "my", "me", "you", "your", "we", "our",
+})
 
-# Default skill fallbacks
-_DEFAULT_SKILL_TRIGGERS: dict[str, list[str]] = {
-    "debug":   ["debug", "what's happening", "why is", "error", "broken"],
-    "verify":  ["verify", "check if", "validate", "correct"],
-    "security": ["security", "vulnerability", "injection", "auth"],
-    "simplify": ["simplify", "make simpler", "clearer", "easier to read"],
-    "stuck":   ["stuck", "can't", "not working", "blocked"],
-    "remember": ["remember", "note this", "save this", "don't forget"],
-}
+
+def _tokenise(text: str) -> list[str]:
+    """Lowercase, strip punctuation, remove stop words."""
+    tokens = re.findall(r"[a-zA-Z0-9]+", text.lower())
+    return [t for t in tokens if t not in _STOP_WORDS]
 
 
 # ---------------------------------------------------------------------------
-# Matcher
+# Scoring helpers
 # ---------------------------------------------------------------------------
 
-class SkillMatcher:
-    """
-    Match user queries against available skills and score relevance.
+def _score_skill(skill: Skill, query_tokens: list[str]) -> float:
+    if not query_tokens:
+        return 0.0
 
-    Ports: skills/skillMatcher.ts, skills/matchSkill.ts
-    """
+    name_tokens = _tokenise(skill.name)
+    desc_tokens = _tokenise(skill.description)
+    all_tokens = set(name_tokens) | set(desc_tokens) | set(skill.tags)
 
-    def __init__(self, cwd: Path | None = None):
-        self._cwd = cwd
+    total = len(query_tokens)
+    matched = sum(1 for t in query_tokens if t in all_tokens)
 
-    def match(
-        self,
-        query: str,
-        top_k: int = 5,
-        threshold: float = 0.1,
-    ) -> list[ScoredSkillMatch]:
-        """
-        Find skills that match a user query.
+    exact_bonus = 0.4 if skill.name.lower() in " ".join(query_tokens) else 0.0
 
-        Scoring combines:
-        - Exact name match (highest weight)
-        - Keyword signal matching
-        - Description substring matching
-        - Fallback trigger phrase matching
-        """
-        query_lower = query.lower()
-        query_words = set(re.findall(r"\w+", query_lower))
-        skills = list_skills(cwd=self._cwd)
-        matches: list[tuple[float, ScoredSkillMatch]] = []
+    prefix_bonus = 0.0
+    for qt in query_tokens:
+        if any(st.startswith(qt) for st in all_tokens if len(qt) >= 3):
+            prefix_bonus += 0.1
+    prefix_bonus = min(prefix_bonus, 0.3)
 
-        for skill in skills:
-            score, reasons = self._score_skill(skill, query_lower, query_words)
-            if score >= threshold:
-                matches.append((score, ScoredSkillMatch(
-                    skill=skill,
-                    score=score,
-                    matched_on=reasons,
-                )))
+    base_score = matched / total
+    return min(1.0, base_score + exact_bonus + prefix_bonus)
 
-        matches.sort(key=lambda x: -x[0])
-        return [m for _, m in matches[:top_k]]
 
-    def _score_skill(
-        self,
-        skill: Skill,
-        query_lower: str,
-        query_words: set[str],
-    ) -> tuple[float, list[str]]:
-        score = 0.0
-        reasons: list[str] = []
+def _build_reason(skill: Skill, query_tokens: list[str]) -> tuple[str, list[str]]:
+    name_tokens = set(_tokenise(skill.name))
+    desc_tokens = set(_tokenise(skill.description))
+    tag_tokens  = set(skill.tags)
 
-        # 1. Exact name match — highest weight
-        name_lower = skill.name.lower()
-        if query_lower.strip() == name_lower:
-            score += 1.0
-            reasons.append("exact_name")
-        elif name_lower in query_lower:
-            score += 0.5
-            reasons.append("name_contains")
-        elif query_lower.strip() in name_lower:
-            score += 0.4
-            reasons.append("name_contains_rev")
+    matched: list[str] = []
+    reasons: list[str] = []
 
-        # 2. Keyword signal matching
-        for domain, signals in _KEYWORD_SIGNALS.items():
-            domain_score = 0.0
-            for kw, weight in signals.items():
-                if kw in query_lower:
-                    domain_score = max(domain_score, weight)
-            if domain_score > 0:
-                score += domain_score * 0.6
-                reasons.append(f"signal:{domain}")
+    for qt in query_tokens:
+        if qt in name_tokens:
+            matched.append(qt)
+            reasons.append(f"name:{qt}")
+        elif qt in desc_tokens:
+            matched.append(qt)
+            reasons.append(f"desc:{qt}")
+        elif qt in tag_tokens:
+            matched.append(qt)
+            reasons.append(f"tag:{qt}")
 
-        # 3. Description matching
-        desc_lower = skill.description.lower()
-        if desc_lower and desc_lower in query_lower:
-            score += 0.5
-            reasons.append("description")
-        elif desc_lower:
-            desc_words = set(re.findall(r"\w+", desc_lower))
-            overlap = query_words & desc_words
-            if overlap:
-                score += min(0.4, len(overlap) * 0.1)
-                reasons.append("description_words")
-
-        # 4. Trigger phrase matching (for bundled skills)
-        triggers = _DEFAULT_SKILL_TRIGGERS.get(skill.name.lower(), [])
-        for trigger in triggers:
-            if trigger in query_lower:
-                score += 0.7
-                reasons.append("trigger")
-                break
-
-        # Normalize to 0.0–1.0
-        score = min(1.0, score / 2.0)
-        return score, reasons
+    reason = ", ".join(reasons[:4]) or "partial overlap"
+    return reason, matched
 
 
 # ---------------------------------------------------------------------------
-# Auto-skill suggestion
+# Public API
 # ---------------------------------------------------------------------------
 
-def suggest_skills(
+def match_skills(
     query: str,
+    skills: list[Skill] | None = None,
     cwd: Path | None = None,
-    top_k: int = 3,
-) -> list[ScoredSkillMatch]:
-    """
-    Suggest the most relevant skills for a query.
+    top_k: int = 5,
+    min_score: float = 0.1,
+) -> list[SkillMatch]:
+    """Find skills most relevant to *query*."""
+    if skills is None:
+        skills = list_skills(cwd)
 
-    Returns top-k SkillMatch objects, or empty list if nothing relevant.
-    """
-    matcher = SkillMatcher(cwd=cwd)
-    return matcher.match(query, top_k=top_k, threshold=0.15)
+    query_tokens = _tokenise(query)
+    if not query_tokens:
+        return []
+
+    results: list[SkillMatch] = []
+    for skill in skills:
+        score = _score_skill(skill, query_tokens)
+        if score >= min_score:
+            reason, matched = _build_reason(skill, query_tokens)
+            results.append(SkillMatch(
+                skill_name=skill.name,
+                score=score,
+                reason=reason,
+                matched_tokens=matched,
+            ))
+
+    results.sort(key=lambda m: -m.score)
+    return results[:top_k]
 
 
-def auto_inject_skills(
+def best_skill_match(
     query: str,
-    context: dict | None = None,
+    skills: list[Skill] | None = None,
     cwd: Path | None = None,
-    max_inject: int = 3,
-) -> list[Skill]:
-    """
-    Automatically inject relevant skills into a session context.
-
-    Returns skills that should be included in the system prompt.
-    """
-    matches = suggest_skills(query, cwd=cwd, top_k=max_inject)
-    return [m.skill for m in matches if m.score >= 0.25]
+    min_score: float = 0.3,
+) -> SkillMatch | None:
+    """Return the single best matching skill, or None if below threshold."""
+    matches = match_skills(query, skills=skills, cwd=cwd, top_k=1, min_score=min_score)
+    return matches[0] if matches else None
 
 
-# ---------------------------------------------------------------------------
-# Global matcher instance
-# ---------------------------------------------------------------------------
-
-_global_matcher = SkillMatcher()
-
-
-def match_skills(query: str, **kw) -> list[ScoredSkillMatch]:
-    return _global_matcher.match(query, **kw)
+def rank_skills_for_intent(
+    intent: str,
+    available_skills: list[Skill],
+) -> list[tuple[float, Skill]]:
+    """Rank a list of skills by relevance to an expressed intent."""
+    query_tokens = _tokenise(intent)
+    scored = [
+        (_score_skill(sk, query_tokens), sk)
+        for sk in available_skills
+    ]
+    scored.sort(key=lambda x: -x[0])
+    return scored
 
 
 __all__ = [
-    "ScoredSkillMatch",
-    "SkillMatcher",
-    "suggest_skills",
-    "auto_inject_skills",
     "match_skills",
+    "best_skill_match",
+    "rank_skills_for_intent",
+    "SkillMatch",
 ]
