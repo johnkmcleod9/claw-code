@@ -84,12 +84,50 @@ def create_default_registry() -> ToolRegistry:
     from .bash_tool import BashTool
     from .grep_tool import GrepTool
     from .glob_tool import GlobTool
+    from .web_search import WebSearchTool
+    from .web_fetch import WebFetchTool
+    from .todo_tool import TodoWriteTool, TodoReadTool
+    from .skill_tool import SkillTool
+    from .agent_tool import AgentTool, TaskListTool, TaskGetTool
+    from .notebook_edit import NotebookEditTool
+    from .misc_tools import SleepTool, AskUserTool, ToolSearchTool
 
     registry = ToolRegistry()
+
+    # Core file tools
     registry.register(FileReadTool())
     registry.register(FileWriteTool())
     registry.register(FileEditTool())
+
+    # Shell
     registry.register(BashTool())
+
+    # Search tools
     registry.register(GrepTool())
     registry.register(GlobTool())
+
+    # Web tools
+    registry.register(WebSearchTool())
+    registry.register(WebFetchTool())
+
+    # Task management
+    registry.register(TodoWriteTool())
+    registry.register(TodoReadTool())
+
+    # Skills
+    registry.register(SkillTool())
+
+    # Agent / sub-agent tools
+    registry.register(AgentTool())
+    registry.register(TaskListTool())
+    registry.register(TaskGetTool())
+
+    # Notebook
+    registry.register(NotebookEditTool())
+
+    # Utility tools
+    registry.register(SleepTool())
+    registry.register(AskUserTool())
+    registry.register(ToolSearchTool(registry))
+
     return registry

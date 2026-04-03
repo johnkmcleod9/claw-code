@@ -25,6 +25,43 @@ def _get_git_info(cwd: Path) -> str | None:
         return None
 
 
+def _load_project_context(cwd: Path) -> list[tuple[str, str]]:
+    """Load project context files (CLAUDE.md, AGENTS.md, etc.) from cwd and parents."""
+    context_filenames = [
+        "CLAUDE.md",
+        "AGENTS.md",
+        ".claude/settings.md",
+        ".github/copilot-instructions.md",
+    ]
+    found: list[tuple[str, str]] = []
+    max_content = 5_000  # Max chars per context file
+
+    # Check cwd and up to 3 parent directories
+    check_dirs = [cwd]
+    p = cwd
+    for _ in range(3):
+        p = p.parent
+        if p == p.parent:
+            break
+        check_dirs.append(p)
+
+    seen_names: set[str] = set()
+    for d in check_dirs:
+        for filename in context_filenames:
+            filepath = d / filename
+            if filepath.exists() and filename not in seen_names:
+                seen_names.add(filename)
+                try:
+                    content = filepath.read_text()
+                    if len(content) > max_content:
+                        content = content[:max_content] + "\n... (truncated)"
+                    found.append((filename, content))
+                except Exception:
+                    pass
+
+    return found
+
+
 def _get_file_tree(cwd: Path, max_depth: int = 2, max_files: int = 50) -> str:
     """Get a simple file tree of the working directory."""
     lines: list[str] = []
@@ -99,6 +136,13 @@ def build_system_prompt(
     git_info = _get_git_info(cwd)
     if git_info:
         parts.append(git_info)
+
+    # Auto-load project context files (like Claude Code's CLAUDE.md)
+    context_files = _load_project_context(cwd)
+    if context_files:
+        parts.append("\n## Project Context")
+        for name, content in context_files:
+            parts.append(f"\n### {name}\n{content}")
 
     tree = _get_file_tree(cwd)
     if tree:
