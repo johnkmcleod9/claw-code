@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Claw Code — interactive coding agent
+# Usage: claw [options]
+#   claw                     # REPL with default model
+#   claw -m sonnet           # REPL with Sonnet
+#   claw -t "Fix the bug"    # One-shot mode
+#   claw -w ~/myproject      # Set working directory
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# Load API keys
+for envfile in ~/.openclaw/credentials/openrouter.env ~/.openclaw/credentials/anthropic.env; do
+    if [ -f "$envfile" ]; then
+        export $(grep -v '^#' "$envfile" | xargs) 2>/dev/null
+    fi
+done
+
+# Also check ~/.claw-code/.env
+if [ -f ~/.claw-code/.env ]; then
+    export $(grep -v '^#' ~/.claw-code/.env | xargs) 2>/dev/null
+fi
+
+exec python3 "$SCRIPT_DIR/repl.py" "$@"
