@@ -72,6 +72,7 @@ def print_help():
   {C.CYAN}/compact{C.RESET}         Compact conversation (keep summary)
   {C.CYAN}/approval{C.RESET}        Toggle tool approval mode (on/off)
   {C.CYAN}/plan{C.RESET}            Toggle plan mode (read-only exploration)
+  {C.CYAN}/team{C.RESET}            Show team mode status (activate via agent)
   {C.CYAN}/tools{C.RESET}           List all available tools
   {C.CYAN}/workdir <path>{C.RESET}  Change working directory
   {C.CYAN}/help{C.RESET}            Show this help
@@ -562,6 +563,10 @@ async def async_main():
                 pm._plan_mode = not pm._plan_mode
                 state = "ON (read-only)" if pm._plan_mode else "OFF (full access)"
                 print(f"{C.GREEN}✓ Plan mode: {state}{C.RESET}")
+            elif cmd == "/team":
+                from src.tools_impl.team_tool import _load_state, _status_summary
+                _load_state()
+                print(_status_summary())
             elif cmd == "/tools":
                 tools = session.registry.list_tools()
                 print(f"\n{C.BOLD}Available tools ({len(tools)}):{C.RESET}")

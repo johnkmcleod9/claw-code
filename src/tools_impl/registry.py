@@ -96,6 +96,7 @@ def create_default_registry() -> ToolRegistry:
     from .config_tool import ConfigTool
     from .plan_tool import EnterPlanModeTool, ExitPlanModeTool
     from .worktree_tool import EnterWorktreeTool, ExitWorktreeTool
+    from .team_tool import TeamCreateTool, TeamTaskTool, TeamAssignTool, TeamStatusTool, TeamStopTool
 
     registry = ToolRegistry()
 
@@ -142,6 +143,13 @@ def create_default_registry() -> ToolRegistry:
     # Git worktree
     registry.register(EnterWorktreeTool())
     registry.register(ExitWorktreeTool())
+
+    # Team mode (multi-agent orchestration)
+    registry.register(TeamCreateTool())
+    registry.register(TeamTaskTool())
+    registry.register(TeamAssignTool())
+    registry.register(TeamStatusTool())
+    registry.register(TeamStopTool())
 
     # Config
     registry.register(ConfigTool())
