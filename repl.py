@@ -74,6 +74,7 @@ def print_help():
   {C.CYAN}/plan{C.RESET}            Toggle plan mode (read-only exploration)
   {C.CYAN}/team{C.RESET}            Show team mode status (activate via agent)
   {C.CYAN}/dream{C.RESET}           Show dream mode status / list journals
+  {C.CYAN}/buddy{C.RESET}           Meet your terminal companion 🐾
   {C.CYAN}/tools{C.RESET}           List all available tools
   {C.CYAN}/workdir <path>{C.RESET}  Change working directory
   {C.CYAN}/help{C.RESET}            Show this help
@@ -578,6 +579,9 @@ async def async_main():
                         tool.execute({"action": "list"}, ToolContext(cwd=Path(session.workdir)))
                     )
                     print(r.output)
+            elif cmd == "/buddy":
+                from src.buddy.commands import buddy_command
+                print(buddy_command(arg))
             elif cmd == "/team":
                 from src.tools_impl.team_tool import _load_state, _status_summary
                 _load_state()
