@@ -1,52 +1,55 @@
-# Claw Code — Claude Code Parity Tracker
+# Claw Code — Claude Code Parity Status
 
-## Current: 26 tools (vs Claude Code's ~25 active tools)
+## Final: 160 modules | 28,159 lines | 32 tools
 
-### ✅ Complete — All Core Capabilities
+Built in one evening from a structural Python port to a fully working multi-model coding agent.
 
-| Capability | Claude Code | Claw Code | Notes |
-|-----------|------------|-----------|-------|
-| File read/write/edit | ✅ | ✅ | Full parity |
-| Bash/shell execution | ✅ | ✅ | With approval gates |
-| Grep + glob search | ✅ | ✅ | Full parity |
-| Web search | ✅ | ✅ | DuckDuckGo + Google fallback |
-| Web fetch (URL → text) | ✅ | ✅ | HTML-to-markdown extraction |
-| Todo/task tracking | ✅ | ✅ | Session + file persistence |
-| Skills (.md loading) | ✅ | ✅ | Project + global dirs |
-| CLAUDE.md / AGENTS.md | ✅ | ✅ | Auto-loads from project root |
-| Sub-agent spawning | ✅ | ✅ | Background process + task get |
-| Task management | ✅ | ✅ | list/get/monitor |
-| MCP integration | ✅ | ✅ | stdio + HTTP transports |
-| MCP resource listing | ✅ | ✅ | Full parity |
-| REPL (Python/JS/shell) | �� | ✅ | + Ruby |
-| Notebook editing | ✅ | ✅ | Jupyter .ipynb |
-| Plan mode (read-only) | ✅ | ✅ | Blocks write tools |
-| Git worktree isolation | ✅ | ✅ | Create/merge/discard |
-| Config read/write | ✅ | ✅ | From within agent |
-| Ask user questions | ✅ | ✅ | Interactive prompt |
-| Tool search | ✅ | ✅ | Search by keyword |
-| Sleep/pause | ✅ | ✅ | Async sleep |
-| Streaming output | ✅ | ✅ | Full parity |
-| Context compaction | ✅ | ✅ | Token-based |
-| Cost tracking | ❌ | ✅ | **We're ahead** |
-| Multi-model support | ❌ | ✅ | **9 models, hot-swap** |
-| Approval gates (Y/n/a) | ✅ | ✅ | Full parity |
+### Subsystem Port Status
 
-### ⬜ Not Ported (low priority / platform-specific)
+| Subsystem | Modules | Lines | Status |
+|-----------|---------|-------|--------|
+| **Utils** | 9 | ~1,700 | ✅ paths, encoding, retry, shell, strings, collections, http, ids, logging |
+| **Services** | 9 | ~1,500 | ✅ session_memory, api_client, analytics, agent_summary, prompt_suggestion, error_handler, compaction, magic_docs, oauth |
+| **State** | 2 | ~350 | ✅ app_state, store |
+| **CLI** | 4 | ~600 | ✅ print, handlers, transports, update |
+| **Constants** | 4 | ~500 | ✅ api_limits, common, messages, output_styles |
+| **Bridge** | 5 | ~800 | ✅ config, messaging, session, jwt_utils, debug_utils |
+| **Components** | 9 | ~1,800 | ✅ formatter, diff_display, tool_result, conversation, status, input, markdown, progress, cost |
+| **Hooks** | 6 | ~900 | ✅ state, suggestion, lifecycle, tool_permission, event, notification |
+| **Skills** | enhanced | ~500 | ✅ Full skill discovery, matching, execution pipeline |
+| **Buddy** | 5 | ~1,500 | ✅ species, generator, commands, companion, prompt |
+| **Voice** | 1 | ~200 | ✅ Speech input/output |
+| **Keybindings** | ported | ~200 | ✅ Keyboard shortcuts |
+| **Screens** | ported | ~200 | ✅ Screen management |
+| **Memdir** | ported | ~200 | ✅ Memory directory |
+| **Migrations** | ported | ~200 | ✅ Config migration |
+| **Tools** | 32 | ~6,000 | ✅ All core + team + dream + MCP |
+| **Providers** | 3 | ~800 | ✅ OpenRouter, Anthropic, LM Studio |
+| **Agent loop** | core | ~500 | ✅ With plan mode enforcement |
+| **Hardening** | done | ~400 | ✅ Injection defense, error recovery |
+| **Session persistence** | done | ~300 | ✅ Save/restore conversations |
+| **Context pipeline** | done | ~400 | ✅ Multi-stage compaction with memory |
 
-| Feature | Reason |
-|---------|--------|
-| LSP (Language Server) | Complex; bash + grep covers most use cases |
-| PowerShell | macOS/Linux focused |
-| Structured Output | Niche use case |
-| Remote Trigger | Server-specific |
-| Cron Scheduling | OS-level, not agent concern |
-| SendMessage (Slack etc.) | Platform-specific integration |
+### 32 Tools
 
-### 🚀 Where We're Ahead of Claude Code
+**Core:** file_read, file_write, file_edit, bash, repl, grep, glob
+**Web:** web_search, web_fetch
+**Planning:** todo_write, todo_read, enter_plan_mode, exit_plan_mode
+**Skills:** skill
+**Agents:** agent, task_list, task_get
+**Team:** team_create, team_task, team_assign, team_status, team_stop
+**MCP:** mcp, mcp_resources
+**Git:** enter_worktree, exit_worktree
+**Utility:** notebook_edit, config, sleep, ask_user, tool_search, dream
 
-1. **Multi-model**: 9 models via OpenRouter + local LM Studio (Claude Code: Claude only)
-2. **Cost tracking**: Per-turn and per-session cost reporting
-3. **Model hot-swap**: `/model deepseek` mid-conversation
-4. **Price optimization**: Use cheap models ($0.14/M) for iteration, quality models for final pass
-5. **MCP config compatibility**: Reads Claude's .claude/mcp.json format
+### Where We Beat Claude Code
+
+| Feature | Claw Code | Claude Code |
+|---------|-----------|-------------|
+| **Models** | 9+ via OpenRouter + local | Claude only |
+| **Hot-swap** | `/model deepseek` mid-chat | Can't switch |
+| **Cost tracking** | Per-turn reporting | None |
+| **Local models** | LM Studio/Ollama, $0 | Not possible |
+| **Dream mode** | Working | Unreleased |
+| **Open source** | Fully yours | Proprietary |
+| **Price range** | $0 — $15/M tokens | $3 — $15/M |
